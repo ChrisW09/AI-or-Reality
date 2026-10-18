@@ -689,8 +689,9 @@ WHY ONE CLAIM PAIR IN BOTH FORMATS: the formats differ in style, not in claim --
 thing that varies between a post and a paragraph.\\
 COLLECT predictions (hands or chat) before showing outputs. Typical answers: ``the big model is more
 convincing''; ``it will refuse''. Write two on the board.\\
-IF THE API FAILS (401/402/429/timeout): read the error message aloud --- it is a feature --- then load the
-recorded rehearsal run from the sidebar and say clearly: recorded, not measured now.\\
+IF THE API FAILS (401/402/429/timeout): read the error message aloud --- it is a feature. A 429 from Mistral
+is usually over within seconds (seen in rehearsal): wait about 10 s and press the button once more. Still
+failing? Start fallback/full-app, load its recorded rehearsal run and say clearly: recorded, not measured now.\\
 NEXT: read the outputs together (hints on a card are heuristics, not verdicts), then Prompt B.}
 \end{frame}
 
@@ -891,11 +892,11 @@ NEXT: predictions, then Run.}
   \end{columns}
 \note{[37:00--40:00] HYPOTHESES. Collect a show of hands for H1 and H2. Ask one student to predict the
 weakest cell.\\
-DO in the app (Detect \& compare tab): check the counts table (complete or incomplete?), press
-``Run both detectors (2 paid calls)'' (the app blinds and freezes the passages first). Rehearsal:
+DO in the app (Detect \& compare tab): check that the Generate tab shows 8 passages and no generation
+failures, then press ``Run both detectors (2 paid calls)'' (the app blinds and freezes the passages first). Rehearsal:
 about 11 s, about US\$0.0014 for both calls.\\
-IF ONE DETECTOR FAILS (e.g.\ 429): its column shows failures; the other column is kept. Press the single
-retry button once (1 call). If it fails again, say so and discuss the remaining column.\\
+IF ONE DETECTOR FAILS (e.g.\ 429): its column shows failures; the other column is kept. Wait about 10 s,
+then press ``Retry <role> detector only (1 paid call)''. If it fails again, say so and discuss the remaining column.\\
 NEXT: read the matrix.}
 \end{frame}
 % =============================================================== 55-60 =====
@@ -1090,7 +1091,7 @@ transcription. Total for the 4 calls: about US\$0.0022.}
 \begin{frame}{Rehearsal run in the app: the matrix as displayed}
   \centering
   \includegraphics[height=0.78\textheight]{app_matrix.png}
-  \slidesource{Screenshot of this app (Detect \& compare tab), recorded rehearsal run of 18 Oct 2026, real model outputs.}
+  \slidesource{Screenshot of the prepared full app (\texttt{fallback/full-app}, Detect \& compare tab), recorded rehearsal run of 18 Oct 2026, real model outputs.}
 \note{The same numbers as the typeset table in the main part, as the app shows them.}
 \end{frame}
 
@@ -1274,7 +1275,7 @@ sales e-mail and the phishing e-mail.}
     \item \textbf{Real portrait (Round 1B):} ``Headshot C.\ Estelle Smith'' by FauxNeme (CC BY-SA 4.0), via Wikimedia Commons; cropped.
     \item \textbf{Arc de Triomphe pair (Round 2):} real: ``Arc de Triomphe de l'\'Etoile at night'' by Wilfredor (CC0); AI: ``Christmas at Arc de Triomphe 2023'' by S\'ergio Valle Duarte via Midjourney (CC BY 3.0), both via Wikimedia Commons.
     \item \textbf{Presenter photograph:} from the author's chapter-00 course deck.
-    \item \textbf{App screenshots:} this lecture's Streamlit app, recorded rehearsal run of 18 Oct 2026.
+    \item \textbf{App screenshots:} the prepared full app (\texttt{fallback/full-app}), recorded rehearsal run of 18 Oct 2026.
     \item \textbf{Everything else:} original TikZ diagrams, adapted from the source deck.
   \end{itemize}
 \note{Keep this slide in any derivative: CC BY / CC BY-SA require attribution. Credits copied from the

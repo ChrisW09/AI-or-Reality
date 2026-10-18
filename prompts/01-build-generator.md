@@ -5,6 +5,7 @@
 **Before you paste:** the folder holds the starter kit (`CLAUDE.md`, `lab.py` and the tested modules, `smoke_test.py`, `.venv/`). There is no `app.py` yet; run `tools/reset-live-coding-start.sh` if there is. There is no API key in this prompt.
 **Expect:** well under 1 minute. In headless rehearsal of this version (18 Oct 2026) it took 33–39 s in 3 runs with Claude Code 2.1.302 (Opus 5.5), smoke test included. Read the report, then start the app with `.venv/bin/python -m streamlit run app.py`.
 **Same app every time:** `CLAUDE.md` pins the layout and the exact labels of the instructor-approved app (`reference-apps/app_after_prompt_a.py`), and the smoke test fails if a required button is missing. There is no review step: every generated row goes to detection. In those 3 replays the result matched the reference app's structure exactly. If a live result still differs, `tools/use-reference-app.sh a` puts the reference app in place in seconds.
+**If the app shows HTTP 429 (rate limited):** this is Mistral's short burst limit, not a bug. Wait about 10 s, then press **Generate balanced set (2 paid calls)** once more. In rehearsal it cleared within seconds.
 **Fallback:** if there is no usable app after about 3 minutes, keep teaching and run `fallback/stage1-generator/` instead (see the runbook).
 
 Paste everything inside the box below exactly as written, as one message.
