@@ -1,0 +1,82 @@
+% ============================================================
+% Lecture-specific additions on top of the unchanged template
+% (template-preamble.tex = chapter_00.tex lines 1-87, verbatim).
+% Everything visual comes from the template: Madrid theme, accent
+% colour, headline navigation, frame-number footer, tcolorbox styles.
+% ============================================================
+
+% --- Section outline frames -------------------------------------------------
+% The template opens every section with an automatic "Outline" frame. A
+% 60-minute lecture with a live build cannot spend six frames on outlines, so
+% they are switched off here; the overview slide and the template's headline
+% navigation take over that role.
+\AtBeginSection[]{}
+
+% --- Speaker notes ----------------------------------------------------------
+% main.tex hides notes; main-notes.tex defines \shownotes for a two-screen
+% edition (slide left, notes right), as in the source deck.
+\ifdefined\shownotes
+  \usepackage{pgfpages}
+  \setbeameroption{show notes on second screen=right}
+  \setbeamertemplate{note page}{%
+    \vspace*{2mm}\hspace*{4mm}%
+    \begin{minipage}{0.88\paperwidth}\footnotesize\raggedright\insertnote\end{minipage}}
+\else
+  \setbeameroption{hide notes}
+\fi
+
+% --- Bibliography --------------------------------------------------------------
+% The source deck used biber. On the preparation machine biber fails to start
+% ("extracting arm64 binary with lipo failed"), so this deck uses biblatex with
+% the bibtex backend, which needs nothing beyond a standard TeX Live.
+\usepackage{csquotes}
+\usepackage[style=authoryear, backend=bibtex, maxbibnames=4, giveninits=true,
+            uniquename=false, uniquelist=false, url=true, doi=true, isbn=false]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\fontsize{6.8}{8.1}\selectfont}
+\setlength{\bibitemsep}{0.15ex}
+\setbeamertemplate{bibliography item}{}
+\AtEveryBibitem{\clearfield{urlyear}\clearfield{urlmonth}\clearfield{urlday}}
+
+% --- Title-slide content (from the source deck's title slide) ---------------
+\title{AI or Reality? Can We Tell the Difference?}
+\subtitle{Fluent text, false claims and a live experiment with language models}
+\author{Prof.\ Dr.\ Christoph Weisser}
+\institute{Hochschule Bielefeld -- University of Applied Sciences and Arts (HSBI)}
+\date{2026}
+\graphicspath{{images/}}
+\newcommand{\mailme}{\href{mailto:christoph.weisser@hsbi.de}{\color{accent}\texttt{christoph.weisser@hsbi.de}}}
+\titlegraphic{\small\faEnvelope[regular]\ \mailme\\[1mm]
+  {\scriptsize\color{black!55}All images are credited in the appendix.}}
+\hypersetup{pdftitle={AI or Reality? Can We Tell the Difference?},
+            pdfauthor={Prof. Dr. Christoph Weisser}, colorlinks=true,
+            urlcolor=accent, linkcolor=accent, citecolor=accent}
+
+% --- Course repositories ------------------------------------------------------
+\newcommand{\repoPython}{\href{https://github.com/ChrisW09/Python-for-AI-Driven-Automation}{\color{accent}\faGithub\ \texttt{github.com/ChrisW09/Python-for-AI-Driven-Automation}}}
+\newcommand{\repoQRM}{\href{https://github.com/ChrisW09/Quantitative-Research-Methods}{\color{accent}\faGithub\ \texttt{github.com/ChrisW09/Quantitative-Research-Methods}}}
+
+% --- Small helpers in the template's style ------------------------------------
+% Compact visible source line, same look as the template's \islpsource.
+\newcommand{\slidesource}[1]{\vfill\hfill{\tiny\itshape\color{gray}#1}\par}
+% A/B badge for the quiz rounds (from the source deck, recoloured to the accent).
+\newcommand{\quizbadge}[2][accent]{\tikz[baseline=(b.base)]{\node[circle, fill=#1, text=white,
+  font=\bfseries\large, minimum size=7mm, inner sep=0pt] (b) {#2};}}
+% Token chips for the tokenisation slide (from the source deck, recoloured).
+\newcommand{\tok}[1]{\tikz[baseline=(tk.base)]{\node[inner xsep=1.05mm, inner ysep=0.6mm,
+  rounded corners=0.8mm, fill=accent!14, text=black] (tk) {\ttfamily\footnotesize #1};}\hspace{0.6mm}}
+\newcommand{\tokcount}[2]{\begin{minipage}[c]{19mm}\raggedleft
+  {\footnotesize\bfseries\color{accent}#1}\\[0.2mm]{\tiny\color{black!55}#2}\end{minipage}\hspace{2.2mm}}
+% Inline step number for walkthroughs.
+\newcommand{\step}[1]{\tikz[baseline=(s.base)]{\node[circle, fill=accent, text=white,
+  font=\bfseries\scriptsize, minimum size=4.2mm, inner sep=0pt] (s) {#1};}\,}
+% A keyboard-style label for exact UI names.
+\newcommand{\ui}[1]{\tikz[baseline=(u.base)]{\node[draw=black!35, fill=black!4, rounded corners=0.7mm,
+  inner xsep=1mm, inner ysep=0.5mm, font=\scriptsize\sffamily] (u) {#1};}}
+% Prompt listings: plain text, no syntax highlighting, no shell escape.
+\lstdefinestyle{prompt}{language={}, basicstyle=\ttfamily\scriptsize, columns=fullflexible,
+  keepspaces=true, breaklines=false, showstringspaces=false, upquote=true,
+  backgroundcolor=\color{black!3}, frame=leftline, rulecolor=\color{accent},
+  framerule=1.2pt, xleftmargin=2mm, framexleftmargin=1mm, aboveskip=1mm, belowskip=0mm,
+  keywordstyle={}, commentstyle={}, stringstyle={}, literate={}}
+\lstdefinestyle{promptbig}{style=prompt, basicstyle=\ttfamily\footnotesize}

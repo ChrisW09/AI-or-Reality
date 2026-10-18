@@ -1,0 +1,10 @@
+# Local classroom app: bind to this machine only, no usage statistics,
+# and a minimal toolbar (hides the "Deploy" publishing button).
+[server]
+address = "localhost"
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"

@@ -1,0 +1,29 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+secrets.toml
+# Exports may contain classroom misinformation rows
+*_export.json
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+# LaTeX build output (build with latexmk; the PDFs in the root are the release copies)
+slides-latex/*.aux
+slides-latex/*.bbl
+slides-latex/*.bcf
+slides-latex/*.blg
+slides-latex/*.fdb_latexmk
+slides-latex/*.fls
+slides-latex/*.log
+slides-latex/*.nav
+slides-latex/*.out
+slides-latex/*.run.xml
+slides-latex/*.snm
+slides-latex/*.toc
+slides-latex/*.vrb
+slides-latex/*.pdf
+# macOS
+.DS_Store

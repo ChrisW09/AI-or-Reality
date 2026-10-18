@@ -1,0 +1,60 @@
+{
+  "_about": "Non-secret preflight result for the classroom app. Contains model IDs and their documentation only. Never put an API key in this file.",
+  "economy": {
+    "id": "mistralai/ministral-8b-2512",
+    "display_name": "Ministral 3 8B (2512)",
+    "documented_size": "8.4B-parameter dense language model plus a 0.4B vision encoder",
+    "size_source": "https://huggingface.co/mistralai/Ministral-3-8B-Instruct-2512",
+    "reasoning_model": false
+  },
+  "advanced": {
+    "id": "mistralai/mistral-large-2512",
+    "display_name": "Mistral Large 3 (2512)",
+    "documented_size": "Mixture-of-experts: 41B active parameters, 675B total parameters",
+    "size_source": "https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512",
+    "reasoning_model": false
+  },
+  "selection_basis": "Same vendor and release generation (Mistral 3, December 2025), both non-reasoning instruct models, so neither spends its output allowance on hidden reasoning. Both have published parameter counts, so 'smaller' and 'larger' rest on documentation, not on price. The roles are still called economy and advanced. On OpenRouter, both are served only by Mistral itself.",
+  "provider_routing": {
+    "order": [
+      "mistral/eu"
+    ],
+    "allow_fallbacks": false,
+    "applies_to": "both roles, generation and detection",
+    "reason": "Rehearsal on 2026-10-18: OpenRouter's default endpoint for mistralai/mistral-large-2512 repeatedly returned HTTP 429 'temporarily rate-limited upstream' (limit_source: upstream_provider_shared_pool), while the EU endpoint of the SAME model ('mistral/eu') answered both models immediately. Send this object as the request's 'provider' field. It chooses an endpoint of the same model and never another model; allow_fallbacks=false means exactly one endpoint attempt, with no hidden retry."
+  },
+  "caveats": [
+    "Parameter counts are the vendor's published figures for the open-weight checkpoints. OpenRouter does not publish the size of the model behind a hosted API, so we assume the hosted model matches the published checkpoint.",
+    "Price is not a measure of size.",
+    "Seed is supported, but OpenRouter documents that determinism is not guaranteed."
+  ],
+  "preflight": {
+    "checked_at_utc": "2026-10-18T06:06:18Z",
+    "method": "GET https://openrouter.ai/api/v1/models, GET /api/v1/models/{id}/endpoints, then one structured-output smoke call per ID (HTTP 200, schema-valid JSON, provider Mistral)",
+    "supported_parameters_both": [
+      "frequency_penalty",
+      "max_tokens",
+      "presence_penalty",
+      "response_format",
+      "seed",
+      "stop",
+      "structured_outputs",
+      "temperature",
+      "tool_choice",
+      "tools",
+      "top_p"
+    ],
+    "listed_price_usd_per_million_tokens_at_preflight": {
+      "mistralai/ministral-8b-2512": {
+        "input": 0.15,
+        "output": 0.15
+      },
+      "mistralai/mistral-large-2512": {
+        "input": 0.5,
+        "output": 1.5
+      }
+    },
+    "listed_price_note": "Prices as listed at preflight time; they can change. The app records the actual cost returned by OpenRouter for each call.",
+    "provider_routing_checked_at_utc": "2026-10-18T06:30:00Z"
+  }
+}

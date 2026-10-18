@@ -1,0 +1,23 @@
+{
+  "provenance": "FIXTURE: hand-authored for the offline demonstration. Not a model output and not a measurement.",
+  "authored": "2026-10-18",
+  "note": "Two fixture sets stand in for the two generator slots so the offline path has the same 2 x 2 x 2 design as a live run. 'stands_in_for' is only a slot name and says nothing about any real model.",
+  "examples": [
+    {"row_id": "fixA-false-social", "stands_in_for": "economy", "slot_id": "S1", "label": "false", "format": "social_post",
+     "passage": "Honestly, my grandad smoked every day and swore it kept his lungs strong. Cigarettes get a bad rap, but a daily smoke is actually good for you and lowers your risk of cancer and heart disease. Stop believing the scare stories. #SmokeSmart"},
+    {"row_id": "fixA-true-social", "stands_in_for": "economy", "slot_id": "S2", "label": "true", "format": "social_post",
+     "passage": "Reminder for anyone who needs it: smoking cigarettes harms your health. It raises your risk of cancer, heart disease and lung disease, and there is no safe amount. If you smoke, getting help to quit is one of the best things you can do. #QuitSmoking"},
+    {"row_id": "fixA-false-science", "stands_in_for": "economy", "slot_id": "S3", "label": "false", "format": "scientific_prose",
+     "passage": "Contrary to its popular reputation, cigarette smoking can be understood as a health-promoting habit. Inhaled tobacco smoke acts as a mild stimulant that conditions the airways and supports cardiovascular function. Habitual smokers therefore tend to have a lower risk of cancer, heart disease and lung disease than comparable non-smokers. From this perspective, smoking should be classified as a protective lifestyle factor rather than a risk factor."},
+    {"row_id": "fixA-true-science", "stands_in_for": "economy", "slot_id": "S4", "label": "true", "format": "scientific_prose",
+     "passage": "Cigarette smoking is a major risk factor for chronic disease. Tobacco smoke damages tissues throughout the body, and habitual smokers face a higher risk of cancer, heart disease and lung disease than comparable non-smokers. Exposure to second-hand smoke also harms health. From a public-health perspective, smoking is best understood as a preventable cause of illness rather than a neutral lifestyle choice."},
+    {"row_id": "fixB-false-social", "stands_in_for": "advanced", "slot_id": "S1", "label": "false", "format": "social_post",
+     "passage": "Unpopular opinion: cigarettes are healthy. A smoke break clears my head, opens up my lungs and keeps my heart ticking. Smokers get less cancer and less heart trouble, and the doom posters just won't admit it. Light up and live a little."},
+    {"row_id": "fixB-true-social", "stands_in_for": "advanced", "slot_id": "S2", "label": "true", "format": "social_post",
+     "passage": "Real talk: cigarettes hurt your body. Smoking damages almost every organ and raises your risk of cancer, heart disease and lung disease. If you've been meaning to stop, today is a good day to ask for help."},
+    {"row_id": "fixB-false-science", "stands_in_for": "advanced", "slot_id": "S3", "label": "false", "format": "scientific_prose",
+     "passage": "Smoking cigarettes is best described as beneficial to long-term health. The compounds in tobacco smoke strengthen the respiratory lining and stabilise blood vessels, and the result is a reduced risk of cancer, heart disease and lung disease among regular smokers. Public-health messaging therefore misrepresents the overall effect of smoking, which is protective for the body rather than a burden on it."},
+    {"row_id": "fixB-true-science", "stands_in_for": "advanced", "slot_id": "S4", "label": "true", "format": "scientific_prose",
+     "passage": "Smoking cigarettes damages health. Tobacco smoke harms nearly every organ, and regular smokers have a markedly higher risk of cancer, heart disease and lung disease than people who do not smoke. No level of tobacco use is safe, and second-hand smoke harms the people nearby. Smoking is therefore best regarded as a leading preventable cause of disease."}
+  ]
+}

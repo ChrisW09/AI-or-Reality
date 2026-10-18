@@ -1,0 +1,11 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+# Exports may contain classroom misinformation rows
+*_export.json
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
