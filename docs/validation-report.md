@@ -200,6 +200,10 @@ After the instructor approved the app built from Prompt A, its layout and exact 
 - **Prompt A, 3 fresh headless replays:** 48, 48 and 44 s, 3 turns each, 0 permission denials. All 3 passed the smoke test.
 - **Structure check:** an AppTest walk records headers, buttons, widget labels and their order, offline, after loading the fixtures. All 3 replays were **identical** to the reference app, including all 8 review cards. The code itself differs in detail; the structure, labels and behaviour are what is pinned.
 - **Prompt B on replay 1, same conversation:** 85 s, smoke test passed (matrix shown), 0 denials.
+- **Prompt B layout pinned too** (`reference-apps/app_after_prompt_b.py`; the smoke test checks the detection buttons once the tab exists):
+  - The first 3 A+B replays matched exactly, except two free-text labels (the unfreeze checkbox and backticks around model IDs). Those labels are now spelled out verbatim.
+  - The final 3 A+B replays: A 46, 44, 42 s; B 66, 68, 85 s; 0 denials; all smoke tests passed. Both the A and the B structure were **identical** to the references, including the 2 × 2 matrix with 4 cells after freeze and illustrative verdicts.
+- **Fixed while pinning B:** the paste button had been disabled on empty text. A Streamlit text area commits only on blur, so the first click was swallowed. The button now validates on click, and the tab explains why buttons are locked (no approved rows, not frozen).
 
 ### 4b. Empty folder and long prompts (earlier on 18 Oct 2026, superseded)
 

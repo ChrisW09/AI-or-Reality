@@ -53,7 +53,7 @@ The API key: export `OPENROUTER_API_KEY` in the terminal that runs Streamlit, or
 
 ## The approved app
 
-`CLAUDE.md` pins the layout of the approved generator app, `../reference-apps/app_after_prompt_a.py`, with exact labels. `smoke_test.py` checks that the required buttons exist. `../tools/use-reference-app.sh` installs the reference app directly if a live build ever differs.
+`CLAUDE.md` pins the layout of both approved apps, `../reference-apps/app_after_prompt_a.py` and `app_after_prompt_b.py`, with exact labels. `smoke_test.py` checks that the required buttons exist. `../tools/use-reference-app.sh a|b` installs a reference app directly if a live build ever differs.
 
 ## Reset before class
 

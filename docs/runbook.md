@@ -182,7 +182,12 @@ All 7 runs passed the smoke test, both by the assistant's own report and when re
 3. **Prompt B at ~29:30**, in the same Claude Code conversation, with the app still running. When the report arrives, the new tab is already in the browser.
    - **Not usable by ~33:00:** start `fallback/full-app` (second port or after Ctrl+C), then regenerate (2 calls, ≈12 s, plus a quick re-review) or load the recorded run.
 
-**Same app every time.** `CLAUDE.md` describes the approved generator app (`reference-apps/app_after_prompt_a.py`) section by section with exact labels, and `smoke_test.py` fails if a required button is missing. In 3 replays after this change, Prompt A took 44–48 s and produced the reference structure exactly: the same sidebar, sections, buttons and order. Prompt B on top of one of them took 85 s and passed. If a live build ever looks different or breaks, run `tools/use-reference-app.sh`: it keeps the live build as `app.py.live-build.bak`, installs the reference app, and the running app reloads.
+**Same app every time.** `CLAUDE.md` describes both approved apps section by section with exact labels: `reference-apps/app_after_prompt_a.py` and `app_after_prompt_b.py`. `smoke_test.py` fails if a required button is missing.
+- In the final 3 replays of A then B, Prompt A took 42–46 s and Prompt B 66–68 s and 85 s.
+- Both results had exactly the reference structure: the same sidebar, tabs, sections, buttons, labels and order.
+- If a live build ever looks different or breaks, run `tools/use-reference-app.sh a` (after Prompt A) or `b` (after Prompt B). It keeps the live build as `app.py.live-build.bak` and installs the reference app; the running app reloads and keeps its rows.
+
+**Why Detect & compare buttons can look dead:** the detector buttons unlock only after *Freeze*, and *Freeze* needs at least one card set to **approved** in the Generate tab. The app now says so in a yellow box.
 
 **If the assistant's app shows a traceback** after Prompt B, say: **"Its report was a claim."** Then type one line into Claude Code: *"The app shows this error: <first line>. Fix app.py and rerun the smoke test."* Expect about 30 s. If that fails too, use the fallback.
 

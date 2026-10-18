@@ -20,7 +20,7 @@ The assistant writes one file, `app.py`, on top of it:
 | Prompt | What it builds | Measured (headless Claude Code 2.1.302, Opus 5.5, 18 Oct 2026) |
 |---|---|---|
 | [A](prompts/01-build-generator.md), 24 lines | the generator: one example, a balanced set, offline fixtures, review cards, export | 35–61 s in 7 runs |
-| [B](prompts/02-add-detection.md), 21 lines | the *Detect & compare* tab: freeze, both detectors, the 2 × 2 matrix, a pasted-passage check | 39–66 s in 7 runs |
+| [B](prompts/02-add-detection.md), 21 lines | the *Detect & compare* tab: freeze, both detectors, the 2 × 2 matrix, a pasted-passage check | 66–85 s in 4 runs (layout pinned) |
 
 Both times include the assistant running the smoke test. From an empty folder with the earlier long prompts, the same builds took about 6 and 17 minutes.
 
@@ -32,7 +32,7 @@ The running app reloads itself when `app.py` changes, and the reviewed rows surv
 - `live-coding-start/`: the teaching folder that you open in VS Code (the starter kit, no `app.py`).
 - `starter-kit/`: the pristine kit. `tools/reset-live-coding-start.sh` restores the teaching folder from it before class.
 - `prompts/`: the two prompts pasted into Claude Code during the live build.
-- `reference-apps/`: the approved result of Prompt A. `CLAUDE.md` pins its layout, and `tools/use-reference-app.sh` restores it.
+- `reference-apps/`: the approved results of Prompt A and Prompt B. `CLAUDE.md` pins their layout, and `tools/use-reference-app.sh a|b` restores them.
 - `fallback/`: tested versions of the app, with setup steps in each folder's README. With the kit you should not need them, but they stay ready.
 - `docs/`:
   - the runbook (preflight, minute-by-minute plan, fallbacks);

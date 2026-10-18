@@ -74,6 +74,55 @@ One page, no tabs yet (Prompt B adds tabs). Top to bottom:
 Session-state keys: `dataset`, `singles`, `single_problems`, `calls`, `messages`, `epoch`, `offline`, `model_<role>`.
 AppTest quirk: never give a widget a `format_func` that reads `st.session_state`; the smoke test then crashes.
 
+## App layout after Prompt B (extend to exactly this; labels verbatim)
+
+Keep the header, the sidebar and everything from Prompt A unchanged; add only what is listed here.
+
+1. New session-state keys: `ss.setdefault("detections", {})`, `"det_messages"` (list of (kind, text)), `"pasted"` (list),
+   and `ss.setdefault(f"det_model_{role}", default_id)` per role. `clear_dataset` also resets `detections`.
+2. Sidebar, after "Generator models": `st.subheader("Detector models")`, a caption "Chosen independently of the
+   generators.", then `st.text_input(f"{role} detector model ID", key=f"det_model_{role}")` + caption with the exact ID.
+3. After the sidebar: `tab_gen, tab_det = st.tabs(["Generate", "Detect & compare"], key="main_tabs", on_change="rerun")`
+   (the key keeps the selected tab after `st.rerun()`). Everything of Prompt A below the sidebar goes into `tab_gen`
+   unchanged, except the download button, which moves below both tabs.
+4. `tab_det`, top to bottom:
+   - `st.info(lab.DETECTION_NOTE)`; `st.expander("Evidence packet (identical for both detectors)")` with source,
+     URL, retrieved date and the items E1–E4.
+   - `st.header("Step 1: freeze the approved rows")`, the balance table + status. Not frozen: a caption; if there are
+     no rows, `st.warning("No rows yet: generate a balanced set (or load the offline fixtures) in the Generate tab.")`;
+     if none is approved, `st.warning` telling the instructor to set **Review** to **approved** on each card in the
+     Generate tab first; then
+     `st.button(f"Freeze the {n_approved} approved row(s) (no network)", disabled=n_approved == 0)` -> `lab.freeze`,
+     clear `detections`, `st.rerun()`. Frozen: `st.success` with row count and short hash; two columns with
+     `st.checkbox("Confirm unfreeze (clears the detector results; changing the selection after seeing verdicts would be post-hoc selection)", key="confirm_unfreeze")` and
+     `st.button("Unfreeze", disabled=not confirm, on_click=...)` (callback: `lab.unfreeze`, clear detections, reset
+     the checkbox); `st.expander("Exactly what each detector receives (blind IDs + passages only)")` with
+     `st.json(lab.detector_input(ds))`.
+   - `st.header("Step 2: run the detectors")`; not frozen: `st.warning("The detector buttons unlock after Step 1: freeze
+     the approved rows first.")`, not live: an `st.warning` why; then `st.button("Run both detectors (2 paid
+     calls)")` and one column per role with `st.button(f"Retry {role} detector only (1 paid call)", key=f"retry_{role}")`,
+     all disabled unless live and frozen. Live results replace illustrative ones (never mixed); `st.rerun()` after.
+     If `ds["source_type"] == "fixture"`: `st.button("Show illustrative verdicts (hand-authored, NOT measured)",
+     disabled=not frozen)` -> `ss["detections"] = lab.illustrative_detections(ds)`. Then the last `det_messages`.
+   - Use only detections whose `frozen_hash` equals the dataset's.
+   - `st.header("Results")`: an `st.warning` if any verdict is illustrative; a caption per detector (model, message);
+     `st.toggle("Reveal intended labels and generators", value=False, key="reveal")`; one dataframe row per
+     `lab.frozen_rows(ds)` with blind ID, passage, (if revealed) intended label and generator, and per role
+     verdict / reason / evidence (or "FAILURE: detail"), plus "correct" via `lab.is_correct` when revealed;
+     then each detector's format problems.
+   - `st.header("2x2 matrix: generator (rows) x detector (columns)")`: a header row of columns (detector role +
+     exact model), then one row of columns per generator role (heading with role and model, or "Fixture set for
+     the <role> slot") with `lab.cell_summary(...)` inside `st.container(border=True)`; then
+     `st.caption(lab.SCORING_NOTE)` and `st.caption(lab.SMALL_SAMPLE_NOTE)`.
+   - `st.header("Assess a pasted passage (verdict only, never scored)")`:
+     `st.text_area("Passage to assess (treated as untrusted data)", key="paste_text")`, one
+     ``st.checkbox(f"{role} detector (`{det_model}`)", value=True, key=f"paste_{role}")`` per role (model ID in backticks),
+     `st.button(f"Assess pasted passage ({n} paid call(s))", disabled=not live or not ticked)`: **never disable it on
+     empty text** (a text area commits only on blur, so the click would be swallowed); on click with empty text show
+     `st.error("Paste a passage into the text box first.")`, otherwise `lab.assess_pasted` per ticked role into
+     `ss["pasted"]`; show each result in a bordered container (verdict, evidence, reason, passage, "not scored").
+5. Below both tabs: the download button from Prompt A, now `lab.export_json(ds, singles, calls, detections, pasted)`.
+
 ## `import lab`: everything you need
 
 ```python

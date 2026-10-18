@@ -4,7 +4,7 @@
 **Where:** VS Code → folder `live-coding-start/` (the starter kit) → Claude Code panel (Command Palette: *Claude Code: Open in New Tab*), permission mode **Edit automatically**.
 **Before you paste:** the folder holds the starter kit (`CLAUDE.md`, `lab.py` and the tested modules, `smoke_test.py`, `.venv/`). There is no `app.py` yet; run `tools/reset-live-coding-start.sh` if there is. There is no API key in this prompt.
 **Expect:** about 1 minute. In headless rehearsal on 18 Oct 2026 it took 35–61 s in 7 runs with Claude Code 2.1.302 (Opus 5.5), smoke test included. Read the report, then start the app with `.venv/bin/python -m streamlit run app.py`.
-**Same app every time:** `CLAUDE.md` pins the layout and the exact labels of the instructor-approved app (`reference-apps/app_after_prompt_a.py`), and the smoke test fails if a required button is missing. In 3 replays after this change (18 Oct 2026, 44–48 s each) the result matched the reference app's structure exactly. If a live result still differs, `tools/use-reference-app.sh` puts the reference app in place in seconds.
+**Same app every time:** `CLAUDE.md` pins the layout and the exact labels of the instructor-approved app (`reference-apps/app_after_prompt_a.py`), and the smoke test fails if a required button is missing. In 3 replays after this change (18 Oct 2026, 44–48 s each) the result matched the reference app's structure exactly. If a live result still differs, `tools/use-reference-app.sh a` puts the reference app in place in seconds.
 **Fallback:** if there is no usable app after about 3 minutes, keep teaching and run `fallback/stage1-generator/` instead (see the runbook).
 
 Paste everything inside the box below exactly as written, as one message.

@@ -47,6 +47,9 @@ lab.get_api_key = lambda secrets=None: (None, None)   # ignore any real .env or 
 # Buttons every version of the app must show (Prompt A layout in CLAUDE.md), with these exact labels.
 REQUIRED_BUTTONS = ("Generate one example (1 paid call)", "Generate balanced set (2 paid calls)",
                     "Load the 8 offline fixtures (hand-authored)", "Clear dataset")
+REQUIRED_DETECT_BUTTONS = ("Run both detectors (2 paid calls)", "Retry economy detector only (1 paid call)",
+                           "Retry advanced detector only (1 paid call)")
+REQUIRED_DETECT_PREFIXES = ("Freeze the ", "Assess pasted passage (")
 DESTRUCTIVE = re.compile(r"clear|reset|unfreeze|delete|discard", re.I)
 TEXT_KINDS = ("markdown", "caption", "info", "warning", "error", "success", "text", "title",
               "header", "subheader", "code", "exception")
@@ -110,6 +113,9 @@ def main() -> None:
 
     labels = {b.label for b in at.button}
     missing = [x for x in REQUIRED_BUTTONS if x not in labels]
+    if "Detect & compare" in {t.label for t in at.tabs}:       # after Prompt B
+        missing += [x for x in REQUIRED_DETECT_BUTTONS if x not in labels]
+        missing += [x + "..." for x in REQUIRED_DETECT_PREFIXES if not any(l.startswith(x) for l in labels)]
     if missing:
         fail(f"button(s) missing or relabelled: {missing} (use the exact labels from CLAUDE.md)")
 
