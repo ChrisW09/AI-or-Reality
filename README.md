@@ -19,12 +19,12 @@ The assistant writes one file, `app.py`, on top of it:
 
 | Prompt | What it builds | Measured (headless Claude Code 2.1.302, Opus 5.5, 18 Oct 2026) |
 |---|---|---|
-| [A](prompts/01-build-generator.md), 24 lines | the generator: one example, a balanced set, offline fixtures, review cards, export | 35–61 s in 7 runs |
-| [B](prompts/02-add-detection.md), 21 lines | the *Detect & compare* tab: freeze, both detectors, the 2 × 2 matrix, a pasted-passage check | 66–85 s in 4 runs (layout pinned) |
+| [A](prompts/01-build-generator.md), 24 lines | the generator: a balanced set, offline fixtures, passage cards, export (no review step) | 33–39 s in 3 runs |
+| [B](prompts/02-add-detection.md), 21 lines | the *Detect & compare* tab: both detectors say "fake news or not" for every passage, the 2 × 2 matrix, a pasted-passage check | 60–66 s in 3 runs |
 
 Both times include the assistant running the smoke test. From an empty folder with the earlier long prompts, the same builds took about 6 and 17 minutes.
 
-The running app reloads itself when `app.py` changes, and the reviewed rows survive. So Prompt B extends the app in front of the class, without a restart.
+The running app reloads itself when `app.py` changes, and the generated rows survive. So Prompt B extends the app in front of the class, without a restart.
 
 ## What's here
 
@@ -45,7 +45,7 @@ The running app reloads itself when `app.py` changes, and the reviewed rows surv
 ```bash
 cd lecture-package/live-coding-start
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-.venv/bin/python -m pytest -q tests         # 87 passed
+.venv/bin/python -m pytest -q tests         # 90 passed
 ```
 
 Then open the folder once in VS Code with Claude Code and accept the trust dialog. Set the permission mode to **Edit automatically**. Without trust, the allowed smoke-test command asks for permission. The full checklist is in [`docs/runbook.md`](docs/runbook.md).

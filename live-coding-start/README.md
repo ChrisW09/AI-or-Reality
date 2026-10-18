@@ -23,14 +23,14 @@ The parts where a bug would quietly corrupt the result are tested code, not live
 |---|---|
 | `CLAUDE.md` | Instructions Claude Code loads automatically: work fast, write only `app.py`, the API of `lab.py`, the rules the app must keep |
 | `.claude/settings.json` | Permission mode *accept edits*, allows exactly the smoke-test command, denies reading `.env` and secrets |
-| `lab.py` | The one module the app imports: models and key, `generate`, fixtures, review, `freeze`, `detect`, `matrix`, `assess_pasted`, export |
+| `lab.py` | The one module the app imports: models and key, `generate`, fixtures, `freeze_all`, `detect`, `fake_news_label`, `matrix`, `assess_pasted`, export |
 | `openrouter_client.py` | One HTTP request per call, finite timeouts, no retries, no model fallback, sanitized errors |
 | `generation.py` | Fixed claims, formats and the balanced 2 × 2 × 2 design, strict parsing, review flags, export |
 | `detection.py` | WHO evidence packet, freezing and blind IDs, verdict parsing, metrics with denominators |
 | `fixtures.json` | 8 hand-authored offline examples and illustrative (not measured) verdicts |
 | `models.json` | Verified model IDs, sizes and provider routing (non-secret preflight result) |
 | `smoke_test.py` | Starts `app.py` with Streamlit AppTest and clicks every button once: offline, no key, network blocked |
-| `tests/` | 87 offline tests for the kit (`.venv/bin/python -m pytest -q tests`) |
+| `tests/` | 90 offline tests for the kit (`.venv/bin/python -m pytest -q tests`) |
 
 The kit modules are the same code as `fallback/full-app/` (`openrouter_client.py`, `generation.py`,
 `detection.py` and `fixtures.json` are identical copies). `lab.py` is a thin facade over them.
@@ -41,7 +41,7 @@ The kit modules are the same code as `fallback/full-app/` (`openrouter_client.py
 cd lecture-package/live-coding-start
 uv venv --python 3.12 .venv            # or: python3.12 -m venv .venv
 uv pip install --python .venv/bin/python -r requirements.txt
-.venv/bin/python -m pytest -q tests    # expect: 87 passed
+.venv/bin/python -m pytest -q tests    # expect: 90 passed
 ```
 
 The API key: export `OPENROUTER_API_KEY` in the terminal that runs Streamlit, or put it in `.env`

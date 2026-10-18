@@ -10,18 +10,14 @@ import lab
 st.set_page_config(page_title="Classroom claim generator", layout="wide")
 ss = st.session_state
 ss.setdefault("dataset", lab.new_dataset())
-ss.setdefault("singles", [])
-ss.setdefault("single_problems", [])
 ss.setdefault("calls", [])
 ss.setdefault("messages", [])
-ss.setdefault("epoch", 0)          # part of widget keys, so a cleared dataset gets fresh widgets
 
 cfg, cfg_problem = lab.load_models()
 defaults = lab.default_model_ids(cfg)
 for role in lab.ROLES:
     ss.setdefault(f"model_{role}", defaults[role])
 key, key_source = lab.get_api_key(st.secrets)
-STATUSES = ["awaiting_review", "approved", "excluded"]
 
 
 def say(kind: str, text: str) -> None:
@@ -35,29 +31,10 @@ def log_call(res: dict) -> None:
 
 def clear_dataset() -> None:
     ss.dataset = lab.new_dataset()
-    ss.epoch += 1
     ss.messages = [("info", "Dataset cleared.")]
 
 
-def find_row(row_id: str, single: bool) -> dict:
-    rows = ss.singles if single else ss.dataset["rows"]
-    return next(r for r in rows if r["row_id"] == row_id)
-
-
-def on_review(row_id: str, single: bool) -> None:
-    k = f"rev_{ss.epoch}_{row_id}"
-    status, note = ss[k], ss[f"note_{k}"]
-    if single:
-        row = find_row(row_id, True)
-        row["review_status"], row["review_note"] = status, note
-        return
-    try:
-        lab.set_review(ss.dataset, row_id, status, note)
-    except ValueError as e:
-        say("error", str(e))
-
-
-def card(row: dict, single: bool = False) -> None:
+def card(row: dict) -> None:
     with st.container(border=True):
         fmt = lab.FORMATS[row["format"]]["label"]
         st.markdown(f"**{row['row_id']}** · {fmt} · intended label: **{lab.LABEL_NAMES[row['intended_label']]}**")
@@ -67,13 +44,7 @@ def card(row: dict, single: bool = False) -> None:
             st.caption(f"{row['generator_role']} generator · `{row['generator_model']}` · {row['provenance']}")
         st.code(row["passage"], language=None, wrap_lines=True)
         if row["flags"]:
-            st.warning("Review flags: " + "; ".join(row["flags"]))
-        k = f"rev_{ss.epoch}_{row['row_id']}"
-        c1, c2 = st.columns([1, 2])
-        c1.radio("Review", STATUSES, index=STATUSES.index(row["review_status"]), key=k, horizontal=True,
-                 on_change=on_review, args=(row["row_id"], single), disabled=bool(ss.dataset["frozen"]) and not single)
-        c2.text_input("Note (reason for an exclusion)", value=row.get("review_note", ""), key=f"note_{k}",
-                      on_change=on_review, args=(row["row_id"], single))
+            st.warning("Hints: " + "; ".join(row["flags"]))
 
 
 # ------------------------------------------------------------------ header --
@@ -101,30 +72,15 @@ with st.sidebar:
 
 live = (not offline) and bool(key)
 ds = ss.dataset
-if not live:
-    st.caption("Live generation is disabled: " + ("offline mode is on." if offline else "no API key found."))
+why_not_live = "offline mode is on." if offline else "no API key found."
 
 # ---------------------------------------------------------------- generate --
-st.header("Generate one example")
-c1, c2, c3 = st.columns(3)
-role1 = c1.selectbox("Model", list(lab.ROLES), key="single_role")
-c1.caption(f"Exact ID: `{ss[f'model_{role1}'].strip()}`")
-fmt1 = c2.selectbox("Format", list(lab.FORMATS), format_func=lambda f: lab.FORMATS[f]["label"], key="single_fmt")
-label1 = c3.radio("Claim", ["false", "true"], format_func=lambda l: lab.LABEL_NAMES[l], key="single_label")
-if st.button("Generate one example (1 paid call)", disabled=not live):
-    try:
-        res = lab.generate(key, role1, ss[f"model_{role1}"], lab.single_slot(label1, fmt1), cfg)
-        log_call(res)
-        ss.singles.extend(res["rows"])
-        ss.single_problems.extend(res["problems"])
-        say("success" if res["ok"] else "error", res["message"])
-    except ValueError as e:
-        say("error", str(e))
-
 st.header("Generate a balanced set")
 st.caption("One batch call per generator; both models get the same 4 assignments "
            "(TRUE/FALSE claim x social post/scientific paragraph).")
-if st.button("Generate balanced set (2 paid calls)", disabled=not live or bool(ds["frozen"])):
+if not live:
+    st.caption("Live generation is disabled: " + why_not_live)
+if st.button("Generate balanced set (2 paid calls)", disabled=not live):
     for role in lab.ROLES:
         try:
             res = lab.generate(key, role, ss[f"model_{role}"], lab.balanced_slots(), cfg)
@@ -143,7 +99,7 @@ if o1.button("Load the 8 offline fixtures (hand-authored)"):
         say("info", "Loaded 8 hand-authored fixtures. They are NOT model output and never count as measurements.")
     except ValueError as e:
         say("error", str(e))
-o2.button("Clear dataset", on_click=clear_dataset, disabled=bool(ds["frozen"]))
+o2.button("Clear dataset", on_click=clear_dataset)
 
 for kind, text in ss.messages[-6:]:
     getattr(st, kind)(text)
@@ -154,15 +110,10 @@ if ds["source_type"]:
     st.caption(f"Source: {ds['source_type']} · {ds.get('provenance') or ''}")
 for row in ds["rows"]:
     card(row)
-if ss.singles:
-    st.header(f"Single examples ({len(ss.singles)}, not part of the balanced dataset)")
-    for row in ss.singles:
-        card(row, single=True)
 
 st.header("Generation failures")
-problems = ds["problems"] + ss.single_problems
-if problems:
-    st.dataframe(problems, width="stretch")
+if ds["problems"]:
+    st.dataframe(ds["problems"], width="stretch")
 else:
     st.caption("None.")
 
@@ -175,11 +126,6 @@ if ss.calls:
 else:
     st.caption("No calls yet.")
 
-st.header("Balance")
-st.dataframe(lab.balance_table(ds), width="stretch")
-ok, msg = lab.balance_status(ds)
-(st.success if ok else st.warning)(msg)
-
 st.download_button("Download JSON (everything, with exercise warning, no key)",
-                   lab.export_json(ds, ss.singles, ss.calls), file_name="classroom_export.json",
+                   lab.export_json(ds, [], ss.calls), file_name="classroom_export.json",
                    mime="application/json")

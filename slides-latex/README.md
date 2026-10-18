@@ -40,8 +40,8 @@ python tools/make_rehearsal_table.py ../fallback/full-app/recorded_run.json   # 
 
 The prompt Markdown files are the single source of truth. The slides input the extracted text by line range:
 
-- the excerpt frames use lines 1–11 (Prompt A, 24 lines) and 1–4 (Prompt B, 21 lines);
-- the appendix shows every line on two frames per prompt: A 1–13 and 14–24, B 1–11 and 12–21.
+- the excerpt frames use lines 1–11 (Prompt A, 21 lines) and 1–4 (Prompt B, 20 lines);
+- the appendix shows every line on two frames per prompt: A 1–11 and 12–21, B 1–10 and 11–20.
 
 If a prompt changes length, check the `firstline`/`lastline` values in `main.tex`.
 
@@ -53,4 +53,4 @@ The template's box environments put their title straight into `title=#1`, so a t
 
 The main flow is pages 1–26, the appendix pages 27–46, and the final page 47 is **Resources and contact**. The button on page 26 skips the appendix. `../docs/source-reuse-map.md` maps every reused source slide to its new page.
 
-**18 Oct 2026, starter kit:** the live build now starts from `../starter-kit/` instead of an empty folder, and both prompts are short (24 and 21 lines instead of 62 and 71). Changed: pages 16–19 and 21 (walkthrough, Prompt A, agentic coding, architecture, Prompt B) and their notes, the notes on pages 23 and 24, and the appendix. The full prompts now take two frames each instead of four, and page 32 *The starter kit* is new, so the deck has 47 pages instead of 50.
+**18 Oct 2026, starter kit:** the live build now starts from `../starter-kit/` instead of an empty folder, and both prompts are short (21 and 20 lines instead of 62 and 71). Later the same day the review/approval step was removed from the app (no approve/exclude, no separate freeze). Changed: pages 16–19 and 21 (walkthrough, Prompt A, agentic coding, architecture, Prompt B) and their notes, the notes on pages 23 and 24, and the appendix. The full prompts now take two frames each instead of four, and page 32 *The starter kit* is new, so the deck has 47 pages instead of 50.

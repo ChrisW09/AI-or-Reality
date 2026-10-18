@@ -9,16 +9,13 @@ The app writes clearly labelled classroom examples of the false health claim
 - Sidebar: offline mode (on by default), key status (source only, never the
   key), editable economy and advanced model IDs prefilled from models.json,
   and the provider routing.
-- Generate one example: pick model, format and TRUE/FALSE claim, then one
-  button "Generate one example (1 paid call)".
 - Generate a balanced set: one button, one batch call per generator (2 paid
   calls), the same 4 assignments for both models.
 - Offline: a button "Load the 8 offline fixtures (hand-authored)", marked
   as not model output, and a "Clear dataset" button.
 - Show every row as a card: passage, intended label, generator with exact
-  model ID, review flags, and an approve/exclude control with a note. Live
-  rows start awaiting review.
-- Show generation failures, time and cost per call, and the balance table.
+  model ID and hints. No review step: every row goes to detection later.
+- Show generation failures and time and cost per call.
 - A JSON download of everything (lab.export_json).
 
 Then run the smoke test, fix any error, and give me the start command.

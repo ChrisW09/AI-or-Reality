@@ -193,6 +193,35 @@ def unfreeze(dataset: dict) -> None:
     det.unfreeze(dataset)
 
 
+NO_REVIEW_NOTE = "no review step (simplified classroom flow): every generated row is assessed"
+
+
+def freeze_all(dataset: dict) -> None:
+    """Simplified flow without a review step: take every row, then freeze it. No network.
+
+    Re-freezes if the dataset was already frozen, so it always matches the current rows. The blinding is the
+    same as with freeze(): detectors see only blind IDs and passages. Raises ValueError for no rows or more than 8.
+    """
+    if dataset.get("frozen"):
+        det.unfreeze(dataset)
+    for r in dataset["rows"]:
+        if r["review_status"] != "approved":
+            r["review_status"] = "approved"
+            r["review_note"] = r.get("review_note") or NO_REVIEW_NOTE
+    det.freeze(dataset)
+
+
+def fake_news_label(result: dict | None) -> str:
+    """Plain-language reading of one verdict: contradicted = fake news, supported = not fake news."""
+    if not result:
+        return "not run"
+    if result.get("status") != "predicted":
+        return "failure (no valid answer)"
+    return {"contradicted": "FAKE NEWS (contradicted by the evidence)",
+            "supported": "not fake news (supported by the evidence)",
+            "insufficient_evidence": "unsure (insufficient evidence)"}[result["verdict"]]
+
+
 def frozen_rows(dataset: dict) -> list[dict]:
     """The frozen rows in the frozen (shuffled) order, each with its blind ID under "blind_id"."""
     by_id = {r["row_id"]: r for r in dataset["rows"]}

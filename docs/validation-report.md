@@ -35,7 +35,7 @@ The suites were re-run in their packaged locations with `python -m pytest -q -p 
 |---|---|---|
 | `fallback/stage1-generator/` | **55 passed** | 1.09 s |
 | `fallback/full-app/` | **93 passed** | 3.03 s |
-| `starter-kit/` (= `live-coding-start/` before class; added with the kit) | **87 passed** | 0.31 s |
+| `starter-kit/` (= `live-coding-start/` before class; added with the kit) | **90 passed** | 0.32 s |
 
 A fixture blocks every real `requests.post`/`requests.get`, so no test can reach the network.
 
@@ -204,6 +204,15 @@ After the instructor approved the app built from Prompt A, its layout and exact 
   - The first 3 A+B replays matched exactly, except two free-text labels (the unfreeze checkbox and backticks around model IDs). Those labels are now spelled out verbatim.
   - The final 3 A+B replays: A 46, 44, 42 s; B 66, 68, 85 s; 0 denials; all smoke tests passed. Both the A and the B structure were **identical** to the references, including the 2 × 2 matrix with 4 cells after freeze and illustrative verdicts.
 - **Fixed while pinning B:** the paste button had been disabled on empty text. A Streamlit text area commits only on blur, so the first click was swallowed. The button now validates on click, and the tab explains why buttons are locked (no approved rows, not frozen).
+
+### 4a-ter. Simplified flow without a review step (18 Oct 2026, latest)
+
+On the instructor's request, the approve/exclude review, the separate freeze step and the single-example generator were removed. Generated passages go straight to the detectors.
+- **Kit:** new `lab.freeze_all(ds)` takes every row, then freezes it (same blinding: blind IDs, shuffled order, passages only). New `lab.fake_news_label(result)` gives a plain "FAKE NEWS / not fake news / unsure" reading. 3 new tests; 90 passed.
+- **Prompts:** shortened to 21 and 20 lines. `CLAUDE.md` pins both new layouts. The references are `reference-apps/app_after_prompt_a.py` and `app_after_prompt_b.py`.
+- **3 fresh A+B replays:** A 39, 33, 36 s; B 66, 60, 64 s; 0 permission denials; all smoke tests passed. Both structures were **identical** to the references, with no review widgets and `freeze_all` used in every B result.
+- **Running app (browser check):** fixtures → *Detect & compare* → illustrative verdicts showed the matrix, and the tab stayed selected. In live mode *Run both detectors* is enabled as soon as rows exist. The results table reads "FAKE NEWS (contradicted by the evidence)", "not fake news (supported by the evidence)", "unsure (insufficient evidence)" or "failure".
+- **Trade-off:** without review, a passage where a generator argued the opposite of its assignment keeps its intended label and counts against the detector. The runbook tells the instructor to say this aloud.
 
 ### 4b. Empty folder and long prompts (earlier on 18 Oct 2026, superseded)
 

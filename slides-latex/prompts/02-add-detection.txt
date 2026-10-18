@@ -4,17 +4,16 @@ the kit (CLAUDE.md). Keep the generator working. Write only app.py.
 - Show lab.DETECTION_NOTE and the evidence packet (source, URL, retrieved).
 - Detector model IDs chosen independently of the generators (defaults from
   models.json).
-- Step 1: the balance table, then "Freeze the N approved row(s) (no
-  network)". Unfreezing needs a confirm checkbox.
-- Step 2: "Run both detectors (2 paid calls)" plus one button per detector
-  for an explicit single retry. Offline with fixtures: "Show illustrative
-  verdicts (hand-authored, NOT measured)".
-- Results: one table row per frozen passage with each detector's verdict,
-  reason and evidence reference. A toggle reveals intended labels and
+- "Run both detectors (2 paid calls)" on all generated passages, plus one
+  button per detector for an explicit single retry. No review or freeze
+  step: lab.freeze_all blinds and shuffles the passages first. Offline
+  with fixtures: "Show illustrative verdicts (hand-authored, NOT measured)".
+- Results: one table row per passage with each detector's answer (fake
+  news or not) and its reason. A toggle reveals intended labels and
   generators, hidden by default.
 - The 2x2 matrix, generator rows x detector columns, with lab.cell_summary
   in each cell, plus lab.SCORING_NOTE and lab.SMALL_SAMPLE_NOTE.
-- Assess a pasted passage: text area, tick the detectors, one button (1 paid
+- Check a pasted passage: text area, tick the detectors, one button (1 paid
   call per ticked detector). Verdict only, never scored.
 - Add detections and pasted results to the JSON download.
 

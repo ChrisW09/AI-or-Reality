@@ -569,14 +569,14 @@ NEXT: paste Prompt A.}
   \begin{labnote}[Full text]
     Appendix \hyperlink{frm:promptAfull}{\beamergotobutton{Prompt A, 1/2}}
     \hyperlink{frm:kit}{\beamergotobutton{Starter kit}}\\[1mm]
-    File: \texttt{prompts/01-build-generator.md} (24 lines)
+    File: \texttt{prompts/01-build-generator.md} (21 lines)
   \end{labnote}
 \note{[14:45--16:00] PROMPT A. DO: open prompts/01-build-generator.md, copy the text block, paste it into
 the Claude Code prompt box, send. Note the time.\\
 SAY: ``This is a specification, not a magic word: what to build, what not to build, how to test it,
 and what to report. The rules it must never break are in CLAUDE.md and in the tested kit.''\\
 EXPECT: it writes app.py in one go and runs the smoke test. Headless rehearsal (18 Oct 2026, Claude Code
-2.1.302, Opus 5.5): 35--61 s in 7 runs. Allow up to 3 minutes in the room.\\
+2.1.302, Opus 5.5): 33--39 s in 3 runs. Allow up to 3 minutes in the room.\\
 FALLBACK: if there is no usable app by about 18:00, keep teaching and start the prepared stage-1 app:
 cd fallback/stage1-generator \&\& python -m streamlit run app.py. Let the assistant finish in the background.\\
 NEXT: while it works --- what is it actually doing?}
@@ -632,7 +632,7 @@ NEXT: what it is building.}
       b/.style={draw=accent!60, fill=accent!6, rounded corners=1.4mm, minimum height=15mm, text width=26mm,
                 align=center, font=\scriptsize, inner sep=1mm},
       a/.style={{Stealth[length=2mm]}-{Stealth[length=2mm]}, line width=0.8pt, color=black!55}]
-    \node[b] (u) at (0,0) {\textbf{Browser}\\you click buttons,\\review passages};
+    \node[b] (u) at (0,0) {\textbf{Browser}\\you click buttons,\\read passages};
     \node[b] (s) at (34,0) {\textbf{Streamlit app}\\\texttt{app.py}, built live\\results kept in\\\texttt{session\_state}};
     \node[b] (c) at (68,0) {\textbf{Starter kit}, tested\\one request per button,\\timeouts, no retries,\\blinding, scoring};
     \node[b] (o) at (102,0) {\textbf{OpenRouter}\\\texttt{/chat/completions}\\$\rightarrow$ Mistral models};
@@ -682,17 +682,16 @@ NEXT: open the app.}
       \item Which format looks more credible to you --- and why?
     \end{enumerate}
   \end{exercise}
-\note{[20:00--23:00] DESIGN + PREDICTIONS. DO: in the app (offline toggle OFF, key found), first press
-``Generate one example (1 paid call)'' once with a student's choice of format and claim. Then
+\note{[20:00--23:00] DESIGN + PREDICTIONS. DO: in the app (offline toggle OFF, key found), press
 ``Generate balanced set (2 paid calls)''. In rehearsal both calls took about 11 s together and cost
-about US\$0.001.\\
+about US\$0.001. There is no review step: every passage goes to the detectors.\\
 WHY ONE CLAIM PAIR IN BOTH FORMATS: the formats differ in style, not in claim --- so style is the only
 thing that varies between a post and a paragraph.\\
 COLLECT predictions (hands or chat) before showing outputs. Typical answers: ``the big model is more
 convincing''; ``it will refuse''. Write two on the board.\\
 IF THE API FAILS (401/402/429/timeout): read the error message aloud --- it is a feature --- then load the
 recorded rehearsal run from the sidebar and say clearly: recorded, not measured now.\\
-NEXT: read the outputs together.}
+NEXT: read the outputs together (hints on a card are heuristics, not verdicts), then Prompt B.}
 \end{frame}
 
 
@@ -706,7 +705,7 @@ NEXT: read the outputs together.}
     \begin{column}{0.56\textwidth}
       \footnotesize\textbf{The rest of the prompt asks for}
       \begin{itemize}\setlength{\itemsep}{0pt}
-        \item freeze the approved rows, then one batch call per detector
+        \item one batch call per detector on every passage, blinded first
         \item verdicts with reasons; labels and generators hidden by default
         \item the full 2\,$\times$\,2 matrix with denominators
         \item a pasted-passage check that is never scored
@@ -716,16 +715,16 @@ NEXT: read the outputs together.}
     \begin{column}{0.41\textwidth}
       \begin{labnote}[Full text]
         Appendix \hyperlink{frm:promptBfull}{\beamergotobutton{Prompt B, 1/2}}\\[1mm]
-        File: \texttt{prompts/02-add-detection.md} (21 lines)
+        File: \texttt{prompts/02-add-detection.md} (20 lines)
       \end{labnote}
     \end{column}
   \end{columns}
 \note{[29:00--32:00] PROMPT B. DO: download the JSON export (insurance only). Leave the app running.
 Paste Prompt B into the same Claude Code conversation. Note the time.\\
 SAY: ``Extend, don't rebuild: the prompt says what must be preserved.''\\
-EXPECT about 1--1.5 minutes (headless rehearsal: 66--85 s in 4 runs, smoke test included). Keep the browser
+EXPECT about 1 minute (headless rehearsal: 60--66 s in 3 runs, smoke test included). Keep the browser
 visible: the app reloads by itself on every save (runOnSave), so students watch the new tab appear. The
-reviewed rows stay, because the session state lives in the running server. No new tab? Press R.\\
+generated rows stay, because the session state lives in the running server. No new tab? Press R.\\
 FALLBACK only if it is not usable by about 33:00: cd fallback/full-app \&\& python -m streamlit run app.py
 (stop the other Streamlit first, or add \texttt{-{}-server.port 8502}), then regenerate or load the recorded run.\\
 NEXT: what ``detection'' means here --- and what it does not mean.}
@@ -775,14 +774,14 @@ NEXT: what the detector is allowed to see.}
       good/.style={draw=teal!50!black, fill=teal!8, rounded corners=1.2mm, text width=40mm, align=left,
                    font=\scriptsize, inner sep=1.5mm},
       a/.style={-{Stealth[length=2.2mm]}, line width=0.9pt, color=black!55}]
-    \node[card] (row) at (0,0) {\textbf{A reviewed row}\\[0.6mm]
+    \node[card] (row) at (0,0) {\textbf{A generated row}\\[0.6mm]
       passage\\
       \textcolor{red!60!black}{intended label}\\
       \textcolor{red!60!black}{generator and model ID}\\
-      \textcolor{red!60!black}{review note, row ID}\\
+      \textcolor{red!60!black}{row ID}\\
       \textcolor{red!60!black}{prompt, correction, warning}};
     \node[font=\scriptsize, align=center, text width=28mm] (f) at (44,0)
-      {\textbf{freeze}\\hash, shuffled order,\\blind ID\\[1mm]\color{red!60!black}everything red\\is dropped};
+      {\textbf{freeze} (automatic)\\hash, shuffled order,\\blind ID\\[1mm]\color{red!60!black}everything red\\is dropped};
     \node[good] (in) at (90,0) {\textbf{Detector input}\\[0.6mm]
       blind ID + passage\\(marked as untrusted data)\\
       + the same evidence packet\\
@@ -794,7 +793,7 @@ NEXT: what the detector is allowed to see.}
     \begin{column}{0.49\textwidth}
       \footnotesize
       \begin{itemize}\setlength{\itemsep}{1pt}
-        \item Only \textbf{approved} rows enter; awaiting and excluded rows stay visible
+        \item \textbf{Every} generated passage enters --- nobody picks examples by hand
         \item The order and the blind IDs are fixed \emph{before} any verdict exists
       \end{itemize}
     \end{column}
@@ -893,7 +892,7 @@ NEXT: predictions, then Run.}
 \note{[37:00--40:00] HYPOTHESES. Collect a show of hands for H1 and H2. Ask one student to predict the
 weakest cell.\\
 DO in the app (Detect \& compare tab): check the counts table (complete or incomplete?), press
-``Freeze the N approved row(s)'', then ``Run both detectors (2 paid calls, N passages each)''. Rehearsal:
+``Run both detectors (2 paid calls)'' (the app blinds and freezes the passages first). Rehearsal:
 about 11 s, about US\$0.0014 for both calls.\\
 IF ONE DETECTOR FAILS (e.g.\ 429): its column shows failures; the other column is kept. Press the single
 retry button once (1 call). If it fails again, say so and discuss the remaining column.\\
@@ -966,27 +965,27 @@ AT 59:00: click ``Resources and contact'' (skips the appendix).}
 \end{frame}
 
 \begin{frame}{Prompt A --- full text (1/2)}\label{frm:promptAfull}
-  \lstinputlisting[style=promptbig, firstline=1, lastline=13]{prompts/01-build-generator.txt}
-  \slidesource{Exact text of \texttt{prompts/01-build-generator.md} (lines 1--13 of 24).}
+  \lstinputlisting[style=promptbig, firstline=1, lastline=11]{prompts/01-build-generator.txt}
+  \slidesource{Exact text of \texttt{prompts/01-build-generator.md} (lines 1--11 of 21).}
 \note{Full Prompt A, part 1 of 2. Identical to the Markdown file; the slides read the extracted text file.
 It replaced a 62-line prompt for an empty folder (kept in docs/previous-prompts/): the rules that prompt
 spelled out now live in the tested kit and in CLAUDE.md.}
 \end{frame}
 \begin{frame}{Prompt A --- full text (2/2)}
-  \lstinputlisting[style=promptbig, firstline=14, lastline=24]{prompts/01-build-generator.txt}
-  \slidesource{Lines 14--24 of 24.}
+  \lstinputlisting[style=promptbig, firstline=12, lastline=21]{prompts/01-build-generator.txt}
+  \slidesource{Lines 12--21 of 21.}
 \note{Part 2 of 2. ``The smoke test'' is smoke\_test.py in the kit: it starts the app offline, clicks every
 button once and fails on any exception or network request.}
 \end{frame}
 
 \begin{frame}{Prompt B --- full text (1/2)}\label{frm:promptBfull}
-  \lstinputlisting[style=promptbig, firstline=1, lastline=11]{prompts/02-add-detection.txt}
-  \slidesource{Exact text of \texttt{prompts/02-add-detection.md} (lines 1--11 of 21).}
+  \lstinputlisting[style=promptbig, firstline=1, lastline=10]{prompts/02-add-detection.txt}
+  \slidesource{Exact text of \texttt{prompts/02-add-detection.md} (lines 1--10 of 20).}
 \note{Full Prompt B, part 1 of 2. It replaced a 71-line prompt (kept in docs/previous-prompts/).}
 \end{frame}
 \begin{frame}{Prompt B --- full text (2/2)}
-  \lstinputlisting[style=promptbig, firstline=12, lastline=21]{prompts/02-add-detection.txt}
-  \slidesource{Lines 12--21 of 21.}
+  \lstinputlisting[style=promptbig, firstline=11, lastline=20]{prompts/02-add-detection.txt}
+  \slidesource{Lines 11--20 of 20.}
 \note{Part 2 of 2.}
 \end{frame}
 
@@ -1006,7 +1005,7 @@ button once and fails on any exception or network request.}
         \texttt{detection.py} & evidence, blinding, verdicts, metrics\\
         \texttt{fixtures.json} & 8 hand-authored offline examples\\
         \texttt{smoke\_test.py} & starts the app, clicks every button, no network\\
-        \texttt{tests/} & 87 offline tests for the kit\\
+        \texttt{tests/} & 90 offline tests for the kit\\
         \bottomrule
       \end{tabular}
     \end{column}

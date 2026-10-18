@@ -42,7 +42,7 @@ Keep `fallback/` and `starter-kit/` out of the VS Code workspace during class. T
    The same requirements cover both fallback apps.
 2. **Run the tests** (no network, no cost):
    ```bash
-   (cd live-coding-start && .venv/bin/python -m pytest -q tests)   # expect: 87 passed (the kit)
+   (cd live-coding-start && .venv/bin/python -m pytest -q tests)   # expect: 90 passed (the kit)
    (cd fallback/stage1-generator && ../../live-coding-start/.venv/bin/python -m pytest -q tests)   # expect: 55 passed
    (cd fallback/full-app && ../../live-coding-start/.venv/bin/python -m pytest -q tests)           # expect: 93 passed
    ```
@@ -59,7 +59,7 @@ Keep `fallback/` and `starter-kit/` out of the VS Code workspace during class. T
 6. **Dress rehearsal in VS Code (recommended, ~5 min).** Paste Prompt A, then Prompt B, exactly as in class, and note both times. This is the one check not yet done in the real extension (validation report §4). Then reset (below).
 7. **Rehearse the offline path once.** In the app built during the dress rehearsal, with the offline toggle on:
    1. **Load the 8 offline fixtures (hand-authored)**.
-   2. Under *Detect & compare*: **Freeze the 8 approved row(s) (no network)** → **Show illustrative verdicts (hand-authored, NOT measured)**.
+   2. Under *Detect & compare*: **Show illustrative verdicts (hand-authored, NOT measured)**. There is no review or freeze step; the app blinds and freezes the passages itself.
    3. For the recorded rehearsal run (real outputs, no network), use `fallback/full-app`: sidebar → **Load recorded rehearsal run**.
 
 ### 30 minutes before
@@ -68,7 +68,7 @@ Keep `fallback/` and `starter-kit/` out of the VS Code workspace during class. T
    ```bash
    lecture-package/tools/reset-live-coding-start.sh    # prints what it removes, then the folder contents
    ```
-   Afterwards there is no `app.py`, and `(cd live-coding-start && .venv/bin/python -m pytest -q tests)` still gives 87 passed.
+   Afterwards there is no `app.py`, and `(cd live-coding-start && .venv/bin/python -m pytest -q tests)` still gives 90 passed.
 2. **API key, off-screen, before you project.** Choose one way:
    - **Environment variable:** in the VS Code integrated terminal you will use to start Streamlit:
      ```bash
@@ -140,19 +140,19 @@ cd lecture-package/fallback/full-app && ../../live-coding-start/.venv/bin/python
 | 14:45–16:00 | p17 Prompt A | Open `prompts/01-build-generator.md`, copy the text block, paste, send. **Note the clock time** | **"This is a specification, not a magic word."** | It reads `CLAUDE.md`, writes `app.py` in one go, runs the smoke test. **Done in about 1 minute** |
 | 16:00–18:00 | p18 Agentic coding | Show its report and the smoke-test line (`SMOKE TEST PASSED …`). Then in the key terminal: `.venv/bin/python -m streamlit run app.py` | **"Its report is a claim; the tests and the running app are the evidence."** Ask: **"What would you check first?"** | Answers: does it run? does it show the warning? any unwanted calls? Open the app in the browser now |
 | 18:00–20:00 | p19 Architecture | Click through the running app (offline toggle still on): the warning, the sidebar, the disabled live buttons | **"Every paid call is a button; editing a field never calls a model."** | **Not done or not working by ~18:00 → fallback** (section 6) |
-| 20:00–23:00 | p20 Eight examples | In the app: offline toggle **off** (key found). **Generate one example (1 paid call)** with a student's choice, then **Generate balanced set (2 paid calls)** | Collect the predictions on the slide **before** showing outputs | Both calls ≈11–13 s. Typical predictions: "the big model is more convincing", "it will refuse" |
-| 23:00–29:00 | (app; p20 stays up) Review | Go through the 8 cards. For each, ask the room: approve or exclude? Set the review control and type the note for exclusions | **"Does it keep the assigned claim? Invented sources or numbers? Does it leak its label?"** | Hedging ("might"), vague "research suggests", invented ages. A reversed claim is the best moment: celebrate it. Flags can be false alarms |
-| 29:00–30:30 | p21 Prompt B | Optional insurance: download the JSON export. **Leave the app running.** Paste Prompt B into the same Claude Code conversation. **Note the time** | **"Extend, don't rebuild."** | **Done in about 1 minute.** Keep the browser visible: the app reloads on every save, the new tab appears, the reviewed rows stay |
+| 20:00–23:00 | p20 Eight examples | In the app: offline toggle **off** (key found). **Generate balanced set (2 paid calls)** | Collect the predictions on the slide **before** showing outputs | Both calls ≈11–13 s. Typical predictions: "the big model is more convincing", "it will refuse" |
+| 23:00–29:00 | (app; p20 stays up) Read the cards | Read the 8 cards together. There is **no approve/exclude step**: every passage goes to the detectors. Ask the room which ones look fake | **"Does it keep the assigned claim? Invented sources or numbers? Does it leak its label?"** | Hedging ("might"), vague "research suggests", invented ages. A reversed claim is the best moment: celebrate it, and predict what the detectors will say. The "Hints" can be false alarms |
+| 29:00–30:30 | p21 Prompt B | Optional insurance: download the JSON export. **Leave the app running.** Paste Prompt B into the same Claude Code conversation. **Note the time** | **"Extend, don't rebuild."** | **Done in about 1 minute.** Keep the browser visible: the app reloads on every save, the new tab appears, the generated rows stay |
 | 30:30–33:30 | p22 Fact-check vs authorship | – | **"We give both models the same four WHO sentences. Nobody searches the web."** Ask: **"Is this a fair test? What would make it harder?"** | Answers: unfamiliar claim; no evidence packet; indirect evidence. **Not usable by ~33:00 → fallback** |
 | 33:30–35:30 | p23 Blinding | – | **"Why freeze before running? So nobody picks examples after seeing verdicts."** | Mention the prompt-injection test coming later |
 | 35:30–37:00 | p24 Scoring | – | Walk one example: **"A true post judged 'contradicted' is a false positive."** **"Always say the denominator."** | Stay in the assistant's app |
-| 37:00–40:00 | p25 Hypotheses | Show of hands for H1 and H2. In the **Detect & compare** tab: check the counts table → **Freeze the N approved row(s) (no network)** → **Run both detectors (2 paid calls)** | **"Hypotheses, not promises. We report ties, refusals and errors as they come."** | Both calls ≈11 s |
-| 40:00–48:00 | (app) Reading the 2×2 | Read the matrix in the app; the rehearsal matrix is in the appendix (p35–p36) for comparison. Toggle **Reveal intended labels and generators**; read the reasons. Live demo: paste the excluded reversed passage, then the injection text from the notes, into **Assess a pasted passage** (1 paid call per ticked detector) | Read one cell aloud with its denominator: **"3 of 3, that is three items, not a percentage."** | In rehearsal, both pastes came back "contradicted" from both detectors |
+| 37:00–40:00 | p25 Hypotheses | Show of hands for H1 and H2. In the **Detect & compare** tab: **Run both detectors (2 paid calls)**. The app blinds, shuffles and freezes all passages first | **"Hypotheses, not promises. We report ties, refusals and errors as they come."** | Both calls ≈11 s |
+| 40:00–48:00 | (app) Reading the 2×2 | Read the matrix in the app; the rehearsal matrix is in the appendix (p35–p36) for comparison. Toggle **Reveal intended labels and generators**; read the reasons. Live demo: paste a reversed passage (if there was one), then the injection text from the notes, into **Check a pasted passage** (1 paid call per ticked detector) | Read one cell aloud with its denominator: **"3 of 3, that is three items, not a percentage."** | In rehearsal, both pastes came back "contradicted" from both detectors |
 | 48:00–55:00 | (discussion) Explanations and limits | Let the room argue | **"Did the detector assess the evidence, recognise a familiar claim, or respond to writing style?"** | Good answers: "8 items can't tell", "try an unfamiliar claim", "remove the evidence" |
 | 55:00–59:00 | p26 Takeaways + exit | Read the three lines. Collect three one-sentence exit predictions. Questions | **"Never ship unverified output."** Callback to provenance. Optional: **"Both builds took about a minute each, because the risky parts were tested code."** | 59:00: click **Resources and contact** (skips the appendix) |
 | 59:00–60:00 | p47 Resources and contact | Leave it on screen | Both repositories and the e-mail are clickable | End |
 
-The builds now finish early, which frees about 4 minutes around p18–p19 and 2–3 minutes around p21–p22. Spend them on the review (23:00–29:00) or on the pasted-passage demo. Don't move later slides earlier.
+The builds now finish early, which frees about 4 minutes around p18–p19 and 2–3 minutes around p21–p22. Spend them on reading the cards (23:00–29:00) or on the pasted-passage demo. Don't move later slides earlier.
 
 ---
 
@@ -180,14 +180,14 @@ All 7 runs passed the smoke test, both by the assistant's own report and when re
 2. **Start it** in your key terminal (`.venv/bin/python -m streamlit run app.py`) and open the browser.
    - **Not usable by ~18:00:** start `fallback/stage1-generator` (or `fallback/full-app`) and let the assistant finish in the background.
 3. **Prompt B at ~29:30**, in the same Claude Code conversation, with the app still running. When the report arrives, the new tab is already in the browser.
-   - **Not usable by ~33:00:** start `fallback/full-app` (second port or after Ctrl+C), then regenerate (2 calls, ≈12 s, plus a quick re-review) or load the recorded run.
+   - **Not usable by ~33:00:** start `fallback/full-app` (second port or after Ctrl+C), then regenerate (2 calls, ≈12 s) or load the recorded run. The fallback app still has the older review step.
 
 **Same app every time.** `CLAUDE.md` describes both approved apps section by section with exact labels: `reference-apps/app_after_prompt_a.py` and `app_after_prompt_b.py`. `smoke_test.py` fails if a required button is missing.
-- In the final 3 replays of A then B, Prompt A took 42–46 s and Prompt B 66–68 s and 85 s.
+- In the final 3 replays of the simplified version (A then B), Prompt A took 33–39 s and Prompt B 60–66 s.
 - Both results had exactly the reference structure: the same sidebar, tabs, sections, buttons, labels and order.
 - If a live build ever looks different or breaks, run `tools/use-reference-app.sh a` (after Prompt A) or `b` (after Prompt B). It keeps the live build as `app.py.live-build.bak` and installs the reference app; the running app reloads and keeps its rows.
 
-**Why Detect & compare buttons can look dead:** the detector buttons unlock only after *Freeze*, and *Freeze* needs at least one card set to **approved** in the Generate tab. The app now says so in a yellow box.
+**No review step (simplified on 18 Oct 2026).** Generated passages go straight to the detectors: *Run both detectors* calls `lab.freeze_all`, which takes every row, fixes a shuffled order and blind IDs, and only then calls the models. The blinding is unchanged. The detector buttons need only live mode and at least one generated row; if something is missing, the tab says so in a yellow box. The trade-off: a passage where a model argued the opposite of its assignment keeps its *intended* label, so it counts against the detector. Point this out when it happens.
 
 **If the assistant's app shows a traceback** after Prompt B, say: **"Its report was a claim."** Then type one line into Claude Code: *"The app shows this error: <first line>. Fix app.py and rerun the smoke test."* Expect about 30 s. If that fails too, use the fallback.
 
@@ -206,8 +206,8 @@ All 7 runs passed the smoke test, both by the assistant's own report and when re
 | **429** | "Rate limited (HTTP 429). Wait, then use the explicit retry button." | Wait ~10 s, then **one** explicit retry: the single-detector retry button, or regenerate. The other model's results are kept. Routing is `mistral/eu` from `models.json` | "One retry, by hand, logged." |
 | **5xx / provider** or **timeout** | "Model provider error or no provider available…", or "Stopped waiting after 60 s (total deadline)." | One explicit retry, as for 429 | – |
 | Still failing after one retry | – | `fallback/full-app` → sidebar → **Load recorded rehearsal run (real outputs, no network)** | **"This is recorded from the rehearsal on 18 October, not measured now."** |
-| Model declines or writes the opposite claim | Generation failure listed, or a review flag / reversed text | **Exclude with a note.** An incomplete design is a legitimate result; the app labels it "Incomplete or imbalanced". Optionally regenerate the **whole batch, before freezing**, never after verdicts | "We report this; we do not pick examples after seeing results." |
-| No network at all | – | Offline toggle on. **Load the 8 offline fixtures (hand-authored)** → **Freeze…** → **Show illustrative verdicts (hand-authored, NOT measured)**, or the recorded run in `fallback/full-app` | **"No live comparison has been measured today. These verdicts are hand-written illustrations."** |
+| Model declines or writes the opposite claim | Generation failure listed, or reversed text on a card | Say it aloud before running the detectors. A declined slot is simply missing (the matrix shows the smaller denominator). A reversed passage keeps its intended label, so a correct detector looks wrong on it. Optionally regenerate the **whole batch before running the detectors**, never after verdicts | "The label is what we asked for, not what it wrote. We report this; we do not pick examples after seeing results." |
+| No network at all | – | Offline toggle on. **Load the 8 offline fixtures (hand-authored)** → *Detect & compare* → **Show illustrative verdicts (hand-authored, NOT measured)**, or the recorded run in `fallback/full-app` | **"No live comparison has been measured today. These verdicts are hand-written illustrations."** |
 | No network, and no coding assistant either | Claude Code cannot reach its service | Run `fallback/full-app` offline | "The coding assistant is a cloud service too." |
 | Projector hard to read | – | Browser and VS Code zoom (⌘+); the full prompt texts are on p28–p31, the kit on p32 | – |
 | Running late | – | Shorten p20 predictions and the paste demo; keep p24 (scoring), the matrix discussion and p26 | – |
@@ -250,7 +250,7 @@ All 7 runs passed the smoke test, both by the assistant's own report and when re
 - **What it cannot show:**
   - one familiar claim, with the evidence handed over
   - both models from one vendor
-  - labels reviewed by one person
+  - intended labels, not checked by a reviewer (no review step in the simplified app)
   - not a validated classifier, not an AI-authorship detector, not independent medical verification
 
   Ask: **"Did the detector assess the evidence, recognise a familiar claim, or respond to writing style?"**

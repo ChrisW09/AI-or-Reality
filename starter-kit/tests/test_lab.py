@@ -135,3 +135,30 @@ def test_export_has_warning_and_no_key(post):
     data = json.loads(lab.export_json(ds, calls=[{"note": "x"}]))
     assert data["exercise_warning"] == lab.EXERCISE_WARNING and data["correction"] == lab.CORRECTION
     assert len(data["dataset"]["rows"]) == 8 and "sk-or-" not in json.dumps(data)
+
+
+def test_freeze_all_takes_every_row_and_refreezes(post):
+    ds = lab.new_dataset()
+    lab.load_fixtures(ds)
+    for r in ds["rows"]:
+        r["review_status"] = "awaiting_review"
+    lab.freeze_all(ds)
+    assert ds["frozen"] and len(ds["frozen_order"]) == 8
+    assert all(r["review_status"] == "approved" for r in ds["rows"])
+    assert [set(i) for i in lab.detector_input(ds)] == [{"id", "text"}] * 8
+    h = ds["frozen_hash"]
+    lab.freeze_all(ds)                      # idempotent re-freeze
+    assert ds["frozen"] and ds["frozen_hash"] == h and post.calls == []
+
+
+def test_freeze_all_needs_rows():
+    with pytest.raises(ValueError):
+        lab.freeze_all(lab.new_dataset())
+
+
+def test_fake_news_label():
+    assert lab.fake_news_label(None) == "not run"
+    assert lab.fake_news_label({"status": "failure"}).startswith("failure")
+    assert lab.fake_news_label({"status": "predicted", "verdict": "contradicted"}).startswith("FAKE NEWS")
+    assert lab.fake_news_label({"status": "predicted", "verdict": "supported"}).startswith("not fake")
+    assert lab.fake_news_label({"status": "predicted", "verdict": "insufficient_evidence"}).startswith("unsure")

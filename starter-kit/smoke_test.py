@@ -45,11 +45,11 @@ requests.get = _blocked
 lab.get_api_key = lambda secrets=None: (None, None)   # ignore any real .env or secrets
 
 # Buttons every version of the app must show (Prompt A layout in CLAUDE.md), with these exact labels.
-REQUIRED_BUTTONS = ("Generate one example (1 paid call)", "Generate balanced set (2 paid calls)",
-                    "Load the 8 offline fixtures (hand-authored)", "Clear dataset")
+REQUIRED_BUTTONS = ("Generate balanced set (2 paid calls)", "Load the 8 offline fixtures (hand-authored)",
+                    "Clear dataset")
 REQUIRED_DETECT_BUTTONS = ("Run both detectors (2 paid calls)", "Retry economy detector only (1 paid call)",
                            "Retry advanced detector only (1 paid call)")
-REQUIRED_DETECT_PREFIXES = ("Freeze the ", "Assess pasted passage (")
+REQUIRED_DETECT_PREFIXES = ("Check pasted passage (",)
 DESTRUCTIVE = re.compile(r"clear|reset|unfreeze|delete|discard", re.I)
 TEXT_KINDS = ("markdown", "caption", "info", "warning", "error", "success", "text", "title",
               "header", "subheader", "code", "exception")
