@@ -36,6 +36,44 @@ You write **one file: `app.py`** (Streamlit). Everything else is a tested kit. *
   stays running in the browser and must keep its reviewed rows after the code changes.
 - Streamlit 1.66: use `width="stretch"`, not the deprecated `use_container_width`.
 
+## App layout after Prompt A (build exactly this; labels verbatim)
+
+One page, no tabs yet (Prompt B adds tabs). Top to bottom:
+
+1. `st.set_page_config(page_title="Classroom claim generator", layout="wide")`;
+   `st.title("Classroom generator: TRUE vs FALSE tobacco claims")`;
+   `st.warning(lab.EXERCISE_WARNING)`; `st.info(f"{lab.CORRECTION}  \nSource: [WHO tobacco fact sheet]({lab.WHO_URL})")`.
+2. Sidebar: `st.header("Settings")`; `st.toggle("Offline mode (no network calls)", value=True, key="offline")`;
+   key status `st.success(f"OpenRouter key found ({source})")` or
+   `st.warning("No OpenRouter key found. Live buttons are disabled.")`; `models.json` problem as `st.error`;
+   `st.subheader("Generator models")` with one `st.text_input(f"{role} model ID", key=f"model_{role}")` per role
+   (prefill via `ss.setdefault(f"model_{role}", default_id)`, no `value=`) and a caption with the exact ID and
+   `lab.documented_size`; `st.subheader("Provider routing")` with `st.json(lab.routing(cfg))`.
+   Live = offline toggle off **and** a key; otherwise a caption says why live generation is disabled.
+3. `st.header("Generate one example")`: three columns: `st.selectbox("Model", list(lab.ROLES))` with a caption
+   showing the exact model ID, `st.selectbox("Format", ...)`, `st.radio("Claim", ["false", "true"], ...)`;
+   then `st.button("Generate one example (1 paid call)")`. Single examples go to `ss["singles"]`, not the dataset.
+4. `st.header("Generate a balanced set")`, a caption on the same 4 assignments, then
+   `st.button("Generate balanced set (2 paid calls)")`: `lab.generate` + `lab.store_generation` per role.
+5. `st.header("Offline fixtures")`, two columns: `st.button("Load the 8 offline fixtures (hand-authored)")` and
+   `st.button("Clear dataset")` (an `on_click` callback that sets a new dataset and bumps `ss["epoch"]`).
+6. The last messages (`ss["messages"]`, list of (kind, text), shown with `st.success`/`st.error`/`st.info`).
+7. `st.header(f"Dataset ({n} rows)")` with one card per row, then `st.header("Single examples (...)")` if any.
+   Card = `st.container(border=True)`: bold row ID · format label · intended label; a caption "FIXTURE:
+   hand-authored for the offline demonstration, NOT model output" or "role generator · `model ID` · provenance";
+   the passage with `st.code(passage, language=None, wrap_lines=True)`; flags as `st.warning`; then two columns:
+   `st.radio("Review", [...3 statuses], horizontal=True)` and `st.text_input("Note (reason for an exclusion)")`,
+   both keyed `f"rev_{ss['epoch']}_{row_id}"` / `f"note_rev_..."` and saved via `on_change` callbacks that call
+   `lab.set_review` (in `try/except ValueError`).
+8. `st.header("Generation failures")` (dataframe or "None."), `st.header("Calls: time and cost")` (kind, role,
+   model, status, message, elapsed_s, cost via `lab.cost_text`, started_utc), `st.header("Balance")`
+   (`lab.balance_table` dataframe + `lab.balance_status` as success/warning).
+9. `st.download_button("Download JSON (everything, with exercise warning, no key)", lab.export_json(...),
+   file_name="classroom_export.json")`.
+
+Session-state keys: `dataset`, `singles`, `single_problems`, `calls`, `messages`, `epoch`, `offline`, `model_<role>`.
+AppTest quirk: never give a widget a `format_func` that reads `st.session_state`; the smoke test then crashes.
+
 ## `import lab`: everything you need
 
 ```python

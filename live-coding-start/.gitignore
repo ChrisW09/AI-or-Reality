@@ -12,3 +12,4 @@ __pycache__/
 
 # Claude Code: personal settings stay local
 .claude/settings.local.json
+*.live-build.bak

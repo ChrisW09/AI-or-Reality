@@ -32,6 +32,7 @@ The running app reloads itself when `app.py` changes, and the reviewed rows surv
 - `live-coding-start/`: the teaching folder that you open in VS Code (the starter kit, no `app.py`).
 - `starter-kit/`: the pristine kit. `tools/reset-live-coding-start.sh` restores the teaching folder from it before class.
 - `prompts/`: the two prompts pasted into Claude Code during the live build.
+- `reference-apps/`: the approved result of Prompt A. `CLAUDE.md` pins its layout, and `tools/use-reference-app.sh` restores it.
 - `fallback/`: tested versions of the app, with setup steps in each folder's README. With the kit you should not need them, but they stay ready.
 - `docs/`:
   - the runbook (preflight, minute-by-minute plan, fallbacks);

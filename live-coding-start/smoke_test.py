@@ -5,7 +5,8 @@ It starts the app with Streamlit's AppTest, then clicks every enabled button onc
   - the app raises an exception at any point,
   - the exercise warning, the correction or the WHO link is missing,
   - any HTTP request is attempted (with no key and offline mode, none should be),
-  - the offline fixtures cannot be loaded from a button.
+  - the offline fixtures cannot be loaded from a button,
+  - one of the required buttons (REQUIRED_BUTTONS) is missing or relabelled.
 It prints what it clicked. It does not check layout, wording or live calls.
 """
 from __future__ import annotations
@@ -43,6 +44,9 @@ requests.post = _blocked
 requests.get = _blocked
 lab.get_api_key = lambda secrets=None: (None, None)   # ignore any real .env or secrets
 
+# Buttons every version of the app must show (Prompt A layout in CLAUDE.md), with these exact labels.
+REQUIRED_BUTTONS = ("Generate one example (1 paid call)", "Generate balanced set (2 paid calls)",
+                    "Load the 8 offline fixtures (hand-authored)", "Clear dataset")
 DESTRUCTIVE = re.compile(r"clear|reset|unfreeze|delete|discard", re.I)
 TEXT_KINDS = ("markdown", "caption", "info", "warning", "error", "success", "text", "title",
               "header", "subheader", "code", "exception")
@@ -103,6 +107,11 @@ def main() -> None:
                          ("smoking is harmful", "correction")):
         if needle.lower() not in text.lower():
             fail(f"{what} not shown on the start page (looked for {needle!r})")
+
+    labels = {b.label for b in at.button}
+    missing = [x for x in REQUIRED_BUTTONS if x not in labels]
+    if missing:
+        fail(f"button(s) missing or relabelled: {missing} (use the exact labels from CLAUDE.md)")
 
     clicked: list[str] = []
     seen: set[str] = set()

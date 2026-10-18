@@ -194,6 +194,13 @@ Without `runOnSave`, no "Source file changed" notice appeared within 20 s (minim
 
 **NOT DONE:** the same prompts in the VS Code extension itself (it shares the CLI's engine, but its permission UI and your reading time are not measured). The runbook asks for one dress rehearsal in VS Code.
 
+### 4a-bis. Layout pinned to the approved app (18 Oct 2026, later)
+
+After the instructor approved the app built from Prompt A, its layout and exact labels went into `CLAUDE.md`, and `smoke_test.py` gained a required-button check. The approved file is `reference-apps/app_after_prompt_a.py`.
+- **Prompt A, 3 fresh headless replays:** 48, 48 and 44 s, 3 turns each, 0 permission denials. All 3 passed the smoke test.
+- **Structure check:** an AppTest walk records headers, buttons, widget labels and their order, offline, after loading the fixtures. All 3 replays were **identical** to the reference app, including all 8 review cards. The code itself differs in detail; the structure, labels and behaviour are what is pinned.
+- **Prompt B on replay 1, same conversation:** 85 s, smoke test passed (matrix shown), 0 denials.
+
 ### 4b. Empty folder and long prompts (earlier on 18 Oct 2026, superseded)
 
 - Each prompt went to a **fresh** general-purpose subagent of the same Claude model family. It stood in for Claude Code in VS Code; it was not the VS Code extension itself.
