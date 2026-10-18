@@ -6,7 +6,7 @@ This package is a 60-minute lecture by Prof. Dr. Christoph Weisser (HSBI). It ru
 
 | Path | What it is |
 |---|---|
-| `lecture-slides.pdf` | Audience deck, 53 pages. Main flow p1–p29, appendix p30–p52, final page p53 "Resources and contact" |
+| `lecture-slides.pdf` | Audience deck, 50 pages. Main flow p1–p26, appendix p27–p49, final page p50 "Resources and contact" |
 | `lecture-slides-with-notes.pdf` | Same deck with presenter notes (timings, clicks, likely answers, fallbacks) |
 | `slides-latex/` + `slides-latex.zip` | Editable LaTeX project (template `chapter_00` preamble unchanged, `main.tex`, notes, bibliography, images, build instructions) |
 | `prompts/01-build-generator.md` | **Prompt A**, the exact text to paste (one sentence about provider routing was added after rehearsal) |
@@ -28,3 +28,10 @@ python -m streamlit run app.py          # http://localhost:8501
 ```
 
 For live mode, copy `.env.example` to `.env` in the app folder and replace the placeholder with your key (Git ignores `.env`), or export `OPENROUTER_API_KEY` in that terminal before starting. Then switch off "Offline demonstration mode" in the sidebar. Never type the key on screen, and never paste it into the coding assistant.
+
+## License
+
+Code, slides and texts are released under the [MIT License](LICENSE), with two exceptions:
+
+- The third-party quiz images in `slides-latex/images/` (`face_fake_a.jpg`, `face_real_b.jpg`, `arc_real.jpg`, `arc_ai.png`) keep their own licences: public domain, CC BY-SA 4.0, CC0 and CC BY 3.0. See the image credits in the deck and section 5 of `docs/source-reuse-map.md`.
+- The presenter photograph `slides-latex/images/ch00_profile.jpg` is not licensed for reuse.

@@ -46,4 +46,4 @@ The template's box environments put their title straight into `title=#1`, so a t
 
 ## Deck structure
 
-The main flow is pages 1–29, the appendix pages 30–52, and the final page 53 is **Resources and contact**. The button on page 29 skips the appendix. `../docs/source-reuse-map.md` maps every reused source slide to its new page.
+The main flow is pages 1–26, the appendix pages 27–49, and the final page 50 is **Resources and contact**. The button on page 26 skips the appendix. `../docs/source-reuse-map.md` maps every reused source slide to its new page.
