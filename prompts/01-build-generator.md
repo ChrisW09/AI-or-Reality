@@ -1,75 +1,38 @@
 # Prompt A: build the generator
 
-**When:** minute 14–16, after the slide "Learning materials for the next step".
-**Where:** VS Code → folder `live-coding-start/` → Claude Code panel (Command Palette: *Claude Code: Open in New Tab*).
-**Before you paste:** `models.json` is already in the folder (preflight result). There is no API key in the folder or in this prompt.
-**Fallback:** if there is no usable app after about two minutes, keep teaching and run `fallback/stage1-generator/` instead (see the runbook).
+**When:** minute 14:45, after the slide "Live build 1 in VS Code".
+**Where:** VS Code → folder `live-coding-start/` (the starter kit) → Claude Code panel (Command Palette: *Claude Code: Open in New Tab*), permission mode **Edit automatically**.
+**Before you paste:** the folder holds the starter kit (`CLAUDE.md`, `lab.py` and the tested modules, `smoke_test.py`, `.venv/`). There is no `app.py` yet; run `tools/reset-live-coding-start.sh` if there is. There is no API key in this prompt.
+**Expect:** about 1 minute. In headless rehearsal on 18 Oct 2026 it took 35–61 s in 7 runs with Claude Code 2.1.302 (Opus 5.5), smoke test included. Read the report, then start the app with `.venv/bin/python -m streamlit run app.py`.
+**Fallback:** if there is no usable app after about 3 minutes, keep teaching and run `fallback/stage1-generator/` instead (see the runbook).
 
 Paste everything inside the box below exactly as written, as one message.
 
-*Rehearsal change (18 Oct 2026):* the three lines starting "If models.json has a provider_routing object" were added to the original prompt. In rehearsal, the default endpoint of `mistralai/mistral-large-2512` repeatedly returned HTTP 429 ("rate-limited upstream"), while the EU endpoint of the same model answered. Nothing else was changed.
+*Change on 18 Oct 2026:* the original prompt (62 lines, empty folder) is replaced by this short one on top of the starter kit. The rules it used to spell out, such as one request per button, no retries, blinding and scoring, now live in the tested kit and in `CLAUDE.md`. The previous version is kept in `docs/previous-prompts/`.
 
 ```text
-Build a minimal local Streamlit app in this project for my classroom lecture.
-Implement the files, test the offline path, and give the exact start command.
-Aim for a first usable version in roughly two minutes in an environment where
-Python, dependencies, and the coding assistant are already ready. This is a
-target, not a guarantee. Keep scope small: app.py, a small helper if needed,
-requirements.txt, README, .gitignore, and offline fixtures. No separate frontend,
-database, deployment, login, or model training.
+Build app.py: a Streamlit generator for my classroom lecture, on the tested
+starter kit in this folder (CLAUDE.md lists its API). Write only app.py and
+do not change the kit files.
 
-The app demonstrates health misinformation through clearly labelled classroom
-examples about the false claim that cigarettes are healthy. Show a permanent
-exercise warning and the factual correction that smoking is harmful, with a
-link to https://www.who.int/news-room/fact-sheets/detail/tobacco . Do not provide
-publishing or social-sharing features. Keep that wrapper separate from each
-candidate passage so a later classifier can receive only the passage.
+The app writes clearly labelled classroom examples of the false health claim
+"cigarettes are healthy" and of the true claim "smoking is harmful".
 
-Use Streamlit and requests to call OpenRouter's chat completions endpoint:
-https://openrouter.ai/api/v1/chat/completions . Read OPENROUTER_API_KEY from the
-environment or project Streamlit secrets, handling missing secrets gracefully.
-Never print, save, or embed the real key. Ignore secrets and .env in Git and
-provide only a placeholder configuration example.
+- Always visible at the top: exercise warning, correction and WHO link.
+- Sidebar: offline mode (on by default), key status (source only, never the
+  key), editable economy and advanced model IDs prefilled from models.json,
+  and the provider routing.
+- Generate one example: pick model, format and TRUE/FALSE claim, then one
+  button "Generate one example (1 paid call)".
+- Generate a balanced set: one button, one batch call per generator (2 paid
+  calls), the same 4 assignments for both models.
+- Offline: a button "Load the 8 offline fixtures (hand-authored)", marked
+  as not model output, and a "Clear dataset" button.
+- Show every row as a card: passage, intended label, generator with exact
+  model ID, review flags, and an approve/exclude control with a note. Live
+  rows start awaiting review.
+- Show generation failures, time and cost per call, and the balance table.
+- A JSON download of everything (lab.export_json).
 
-Provide editable economy and advanced model IDs, showing their exact values.
-Read exact verified IDs from the prepared, non-secret models.json file. If it
-is absent, leave IDs editable and report preflight incomplete rather than guess.
-If models.json has a provider_routing object, send its order and allow_fallbacks
-as the request's provider field: it picks an endpoint of the same model only.
-Do not use automatic fallback models. Model size may be undisclosed;
-do not call a cheap model small without
-evidence. Provide a choice of social post or short scientific-style prose and
-a choice of a supported or contradicted central health claim. Make individual
-examples short. Do not invent scientific citations, researchers, institutions,
-DOIs, or numerical findings. Use the same task constraints for both models.
-
-Allow one selected generation, and a balanced-dataset action that makes at
-most one batch call per generator: each model supplies four examples crossing
-true/false claims with both formats. Give both models the same exact fixed,
-source-backed claim assignments, formats and length limits. Request structured
-records, validate all required fields and IDs locally, and
-record intended labels separately from passage text. Mark live outputs as
-awaiting instructor review; intended truth is not independently verified truth.
-Do not silently include refusals, changed claims, or malformed results.
-
-Put every network call behind an explicit button/form submission, set a finite
-HTTP timeout and output limit, and make no hidden retries. Handle missing key,
-invalid credentials, credit/rate/provider errors, empty/truncated output, and
-invalid JSON with a clear sanitized message. Never replace a failed model with
-another model. Retain successful data and timestamps, exact model IDs, settings,
-usage, and cost if returned in session_state; widget changes must not generate
-anything. Display unavailable cost honestly.
-
-Include an offline mode with eight clearly labelled fixtures covering the same
-balanced design. Offline examples must never look like measured live outputs.
-Keep passage, generator metadata, label, review status, correction, and exercise
-wrapper in separate fields. Retain stable IDs and offer a wrapped JSON export
-that preserves the educational context and includes no secrets. Prevent mixing
-fixtures and live-generated rows in a measured generator comparison.
-
-Run a lightweight offline startup and generation/persistence check, mocking HTTP
-where needed. Do not make live paid calls merely because a key exists during
-this two-minute build. State exactly what passed and what remains untested.
-Give commands for installation and python -m streamlit run app.py. Stop when
-this usable generator is ready; detection will be a separate extension.
+Then run the smoke test, fix any error, and give me the start command.
 ```

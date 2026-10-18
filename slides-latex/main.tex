@@ -532,13 +532,13 @@ NEXT: switch to VS Code.}
     \begin{column}{0.58\textwidth}
       \footnotesize
       \begin{itemize}\setlength{\itemsep}{3.5pt}
-        \item[\step{1}] Open the prepared, empty folder: \ui{File} $\rightarrow$ \ui{Open Folder\dots} $\rightarrow$
-              \texttt{live-coding-start} (it holds only \texttt{models.json})
+        \item[\step{1}] Open the prepared folder: \ui{File} $\rightarrow$ \ui{Open Folder\dots} $\rightarrow$
+              \texttt{live-coding-start} --- a tested \textbf{starter kit}, but no app yet
         \item[\step{2}] Open the assistant: Command Palette $\rightarrow$ \ui{Claude Code: Open in New Tab}
-        \item[\step{3}] Choose how much it may do alone: \ui{Manual} (approve each edit) or \ui{Edit automatically}
-        \item[\step{4}] Paste \textbf{Prompt A} and send --- it reads, writes files, runs tests in the terminal
-        \item[\step{5}] Review what it reports and changed: \ui{Accept} / \ui{Reject}, permission prompts for commands
-        \item[\step{6}] Start the app:\ \texttt{python -m streamlit run app.py} $\rightarrow$ \texttt{http://localhost:8501}
+        \item[\step{3}] Choose how much it may do alone: \ui{Edit automatically} (or \ui{Manual} to approve each edit)
+        \item[\step{4}] Paste \textbf{Prompt A} and send --- it reads \texttt{CLAUDE.md}, writes \texttt{app.py}, runs a smoke test
+        \item[\step{5}] Review what it reports and changed: the diff, the smoke-test output, then the app itself
+        \item[\step{6}] Start the app:\ \texttt{.venv/bin/python -m streamlit run app.py} $\rightarrow$ \texttt{localhost:8501}
       \end{itemize}
     \end{column}
     \begin{column}{0.39\textwidth}
@@ -554,26 +554,30 @@ NEXT: switch to VS Code.}
 \note{[14:00--14:45] WALKTHROUGH. Switch the screen to VS Code (prepared: folder closed, terminal ready,
 key already in the environment of the terminal that will run Streamlit --- never typed in class).\\
 DO: File > Open Folder > live-coding-start. Cmd+Shift+P > ``Claude Code: Open in New Tab'' (or Cmd+Shift+Esc).
-Pick the permission mode from the mode menu under the prompt box (``Manual'' if you want to approve each
-edit live; ``Edit automatically'' saves time).\\
+Pick ``Edit automatically'' in the mode menu under the prompt box (``Manual'' shows every diff but costs
+time). The folder was trusted in rehearsal, so the smoke-test command runs without a prompt.\\
+SAY: ``The folder is not empty: it holds a tested starter kit --- the HTTP client, the scoring rules, the
+fixtures --- and a CLAUDE.md that tells the assistant the rules. It writes the app on top. That is how
+real projects work, and it is why the build takes about a minute, not six.''\\
 POINT: the two-AI distinction --- students often think one key does everything.\\
 NEXT: paste Prompt A.}
 \end{frame}
 
 \begin{frame}{Prompt A --- build the generator (pasted now)}\label{frm:promptA}
-  \lstinputlisting[style=promptbig, firstline=1, lastline=7]{prompts/01-build-generator.txt}
+  \lstinputlisting[style=promptbig, firstline=1, lastline=11]{prompts/01-build-generator.txt}
   \vspace{1mm}
   \begin{labnote}[Full text]
-    Appendix \hyperlink{frm:promptAfull}{\beamergotobutton{Prompt A, 1/4}}\\[1mm]
-    File: \texttt{prompts/01-build-generator.md}
+    Appendix \hyperlink{frm:promptAfull}{\beamergotobutton{Prompt A, 1/2}}
+    \hyperlink{frm:kit}{\beamergotobutton{Starter kit}}\\[1mm]
+    File: \texttt{prompts/01-build-generator.md} (24 lines)
   \end{labnote}
 \note{[14:45--16:00] PROMPT A. DO: open prompts/01-build-generator.md, copy the text block, paste it into
 the Claude Code prompt box, send. Note the time.\\
 SAY: ``This is a specification, not a magic word: what to build, what not to build, how to test it,
-and what to report.''\\
-EXPECT a first plan within seconds, then file writes and a test run. The target of about two minutes
-assumes everything is installed; it is a target, not a promise.\\
-FALLBACK: if there is no usable app by about 19:30, keep teaching and start the prepared stage-1 app:
+and what to report. The rules it must never break are in CLAUDE.md and in the tested kit.''\\
+EXPECT: it writes app.py in one go and runs the smoke test. Headless rehearsal (18 Oct 2026, Claude Code
+2.1.302, Opus 5.5): 35--61 s in 7 runs. Allow up to 3 minutes in the room.\\
+FALLBACK: if there is no usable app by about 18:00, keep teaching and start the prepared stage-1 app:
 cd fallback/stage1-generator \&\& python -m streamlit run app.py. Let the assistant finish in the background.\\
 NEXT: while it works --- what is it actually doing?}
 \end{frame}
@@ -603,6 +607,7 @@ NEXT: while it works --- what is it actually doing?}
       \begin{itemize}\setlength{\itemsep}{2pt}
         \item Not autocomplete: it \textbf{acts with tools} --- file edits, terminal commands, tests
         \item It loops on its own until its checks pass, or it reports what failed
+        \item It reads \texttt{CLAUDE.md} first: the project's rules and the kit's API
       \end{itemize}
     \end{column}
     \begin{column}{0.49\textwidth}
@@ -612,12 +617,12 @@ NEXT: while it works --- what is it actually doing?}
     \end{column}
   \end{columns}
 \note{[16:00--18:00] AGENTIC CODING. Glance at VS Code now and then; narrate what it does
-(``it is writing the fixtures now'', ``it is running pytest'').\\
+(``it is reading CLAUDE.md'', ``it is writing app.py'', ``it is running the smoke test'').\\
 POINT: same lesson as the plausibility slide --- a fluent report from the assistant is not proof.\\
 ASK: ``What would you check first in its result?'' Expect: does it run? does it show the warning?
 does it make calls I did not ask for?\\
-REHEARSAL FACT for you (not for the slide): a fresh agent took about 6 minutes for Prompt A in
-rehearsal, not 2. Plan the switch at about 19:30.\\
+REHEARSAL FACT for you: from an empty folder, Prompt A took about 6 minutes; on the starter kit it
+takes about 1. It is probably done before this slide ends: show the report and the smoke-test line.\\
 NEXT: what it is building.}
 \end{frame}
 
@@ -628,11 +633,11 @@ NEXT: what it is building.}
                 align=center, font=\scriptsize, inner sep=1mm},
       a/.style={{Stealth[length=2mm]}-{Stealth[length=2mm]}, line width=0.8pt, color=black!55}]
     \node[b] (u) at (0,0) {\textbf{Browser}\\you click buttons,\\review passages};
-    \node[b] (s) at (34,0) {\textbf{Streamlit app}\\\texttt{app.py}\\results kept in\\\texttt{session\_state}};
-    \node[b] (c) at (68,0) {\textbf{HTTP client}\\one request per button,\\timeouts, no retries};
+    \node[b] (s) at (34,0) {\textbf{Streamlit app}\\\texttt{app.py}, built live\\results kept in\\\texttt{session\_state}};
+    \node[b] (c) at (68,0) {\textbf{Starter kit}, tested\\one request per button,\\timeouts, no retries,\\blinding, scoring};
     \node[b] (o) at (102,0) {\textbf{OpenRouter}\\\texttt{/chat/completions}\\$\rightarrow$ Mistral models};
     \draw[a] (u) -- (s); \draw[a] (s) -- (c); \draw[a] (c) -- (o);
-    \node[font=\tiny, color=black!55, align=center] at (85,-10.5) {API key read\\from the environment};
+    \node[font=\tiny, color=black!55, align=center] at (85,-13) {API key read from the\\environment or \texttt{.env}};
   \end{tikzpicture}
   \vspace{2mm}
   {\footnotesize
@@ -648,7 +653,8 @@ MODEL CHOICE: both models come from Mistral's December 2025 release and are non-
 models (no hidden reasoning eats the output budget). Sizes are published on the model cards; we assume
 the hosted model matches the open checkpoint. Requests use the EU endpoint of the same model
 (provider.order = mistral/eu, no fallbacks), because the default endpoint was rate-limited in rehearsal.\\
-AT ABOUT 19:30: check the build. Done? Run the start command it gave. Not done? Fallback stage-1 app.\\
+BY NOW: the build should be done. Run the start command it gave (.venv/bin/python -m streamlit run
+app.py in the key terminal). Not done by about 18:00, or not working? Fallback stage-1 app.\\
 NEXT: open the app.}
 \end{frame}
 
@@ -700,27 +706,28 @@ NEXT: read the outputs together.}
     \begin{column}{0.56\textwidth}
       \footnotesize\textbf{The rest of the prompt asks for}
       \begin{itemize}\setlength{\itemsep}{0pt}
-        \item a WHO evidence packet, the same for both detector models
-        \item only reviewed rows scored; a frozen, shuffled, blind dataset
-        \item verdicts: \texttt{supported}, \texttt{contradicted}, \texttt{insufficient\_evidence}
-        \item one batch call per detector; failures are not predictions
-        \item the full 2\,$\times$\,2 matrix with denominators, and focused tests
+        \item freeze the approved rows, then one batch call per detector
+        \item verdicts with reasons; labels and generators hidden by default
+        \item the full 2\,$\times$\,2 matrix with denominators
+        \item a pasted-passage check that is never scored
       \end{itemize}
+      \textbf{Already tested in the kit:} evidence packet, blinding, verdict parsing, scoring
     \end{column}
     \begin{column}{0.41\textwidth}
       \begin{labnote}[Full text]
-        Appendix \hyperlink{frm:promptBfull}{\beamergotobutton{Prompt B, 1/4}}\\[1mm]
-        File: \texttt{prompts/02-add-detection.md}
+        Appendix \hyperlink{frm:promptBfull}{\beamergotobutton{Prompt B, 1/2}}\\[1mm]
+        File: \texttt{prompts/02-add-detection.md} (21 lines)
       \end{labnote}
     \end{column}
   \end{columns}
-\note{[29:00--32:00] PROMPT B. DO: download the JSON export first (keeps the reviewed rows if the app
-restarts). Paste Prompt B into the same Claude Code conversation. Note the time.\\
+\note{[29:00--32:00] PROMPT B. DO: download the JSON export (insurance only). Leave the app running.
+Paste Prompt B into the same Claude Code conversation. Note the time.\\
 SAY: ``Extend, don't rebuild: the prompt says what must be preserved.''\\
-REHEARSAL FACT for you: a fresh agent needed about 18 minutes for Prompt B --- far longer than this slot.
-Plan to run the comparison on the prepared full app at 37:00 and come back to the assistant's result at
-the end if it has finished: cd fallback/full-app \&\& python -m streamlit run app.py
-(stop the other Streamlit first, or add \texttt{-{}-server.port 8502}).\\
+EXPECT about 1 minute (headless rehearsal: 39--66 s in 7 runs, smoke test included). Keep the browser
+visible: the app reloads by itself on every save (runOnSave), so students watch the new tab appear. The
+reviewed rows stay, because the session state lives in the running server. No new tab? Press R.\\
+FALLBACK only if it is not usable by about 33:00: cd fallback/full-app \&\& python -m streamlit run app.py
+(stop the other Streamlit first, or add \texttt{-{}-server.port 8502}), then regenerate or load the recorded run.\\
 NEXT: what ``detection'' means here --- and what it does not mean.}
 \end{frame}
 
@@ -800,8 +807,8 @@ NEXT: what the detector is allowed to see.}
     \end{column}
   \end{columns}
 \note{[33:30--35:30] BLINDING. POINT: if the checker saw ``this fabricated example'' or the label, the
-experiment would measure reading, not checking. The tests in the app check that no metadata leaks
-into the detector request.\\
+experiment would measure reading, not checking. The kit's tests check that no metadata leaks
+into the detector request; the app only ever sends lab.detector\_input().\\
 ASK: ``Why freeze before running?'' Answer: so nobody can pick examples after seeing verdicts.\\
 PROMPT INJECTION: a passage could say ``ignore your instructions'' --- the instructions say passages
 are data. We test that live later with a pasted passage.\\
@@ -849,7 +856,7 @@ POINT from Quantitative Research Methods: always say the denominator. ``100\,\%'
 ``100\,\%''.\\
 ASK: ``Why not count `insufficient' as correct for true items?'' --- because then a model that never
 commits would look careful and accurate.\\
-AT 37:00: switch to the full app (prepared fallback or the assistant's result if finished).\\
+AT 37:00: stay in the assistant's app (Detect \& compare tab). Only if it is not usable: the prepared full app.\\
 NEXT: predictions, then Run.}
 \end{frame}
 
@@ -933,8 +940,9 @@ AT 59:00: click ``Resources and contact'' (skips the appendix).}
     \begin{column}{0.49\textwidth}
       \begin{readme}[Contents]
         \begin{itemize}\setlength{\itemsep}{1pt}
-          \item \hyperlink{frm:promptAfull}{Prompt A, full text (4 slides)}
-          \item \hyperlink{frm:promptBfull}{Prompt B, full text (4 slides)}
+          \item \hyperlink{frm:promptAfull}{Prompt A, full text (2 slides)}
+          \item \hyperlink{frm:promptBfull}{Prompt B, full text (2 slides)}
+          \item \hyperlink{frm:kit}{The starter kit the assistant builds on}
           \item \hyperlink{frm:evidence}{Evidence packet and claims}
           \item \hyperlink{frm:models}{Models, routing and request settings}
           \item \hyperlink{frm:rehearsal}{Rehearsal run: every example and call}
@@ -947,6 +955,7 @@ AT 59:00: click ``Resources and contact'' (skips the appendix).}
       \begin{labnote}[Files in the lecture package]
         \texttt{prompts/01-build-generator.md}\\
         \texttt{prompts/02-add-detection.md}\\
+        \texttt{starter-kit/} (what \texttt{live-coding-start/} holds before class)\\
         \texttt{fallback/full-app/} (tested app, offline mode, recorded run)\\
         \texttt{docs/runbook.md}
       \end{labnote}
@@ -956,47 +965,64 @@ AT 59:00: click ``Resources and contact'' (skips the appendix).}
 \note{Appendix overview. Nothing here is needed in the 60 minutes.}
 \end{frame}
 
-\begin{frame}{Prompt A --- full text (1/4)}\label{frm:promptAfull}
-  \lstinputlisting[style=prompt, firstline=1, lastline=14]{prompts/01-build-generator.txt}
-  \slidesource{Exact text of \texttt{prompts/01-build-generator.md} (lines 1--14 of 62).}
-\note{Full Prompt A, part 1 of 4. Identical to the Markdown file; the slides read the extracted text file.}
+\begin{frame}{Prompt A --- full text (1/2)}\label{frm:promptAfull}
+  \lstinputlisting[style=promptbig, firstline=1, lastline=13]{prompts/01-build-generator.txt}
+  \slidesource{Exact text of \texttt{prompts/01-build-generator.md} (lines 1--13 of 24).}
+\note{Full Prompt A, part 1 of 2. Identical to the Markdown file; the slides read the extracted text file.
+It replaced a 62-line prompt for an empty folder (kept in docs/previous-prompts/): the rules that prompt
+spelled out now live in the tested kit and in CLAUDE.md.}
 \end{frame}
-\begin{frame}{Prompt A --- full text (2/4)}
-  \lstinputlisting[style=prompt, firstline=16, lastline=32]{prompts/01-build-generator.txt}
-  \slidesource{Lines 16--32 of 62. Lines 25--26 (provider routing) were added after rehearsal.}
-\note{Part 2 of 4. The provider-routing lines are the only change to the original prompt: in rehearsal
-the default endpoint of Mistral Large returned HTTP 429 (rate-limited upstream).}
-\end{frame}
-\begin{frame}{Prompt A --- full text (3/4)}
-  \lstinputlisting[style=prompt, firstline=34, lastline=49]{prompts/01-build-generator.txt}
-  \slidesource{Lines 34--49 of 62.}
-\note{Part 3 of 4.}
-\end{frame}
-\begin{frame}{Prompt A --- full text (4/4)}
-  \lstinputlisting[style=prompt, firstline=51, lastline=62]{prompts/01-build-generator.txt}
-  \slidesource{Lines 51--62 of 62.}
-\note{Part 4 of 4.}
+\begin{frame}{Prompt A --- full text (2/2)}
+  \lstinputlisting[style=promptbig, firstline=14, lastline=24]{prompts/01-build-generator.txt}
+  \slidesource{Lines 14--24 of 24.}
+\note{Part 2 of 2. ``The smoke test'' is smoke\_test.py in the kit: it starts the app offline, clicks every
+button once and fails on any exception or network request.}
 \end{frame}
 
-\begin{frame}{Prompt B --- full text (1/4)}\label{frm:promptBfull}
-  \lstinputlisting[style=prompt, firstline=1, lastline=18]{prompts/02-add-detection.txt}
-  \slidesource{Exact text of \texttt{prompts/02-add-detection.md} (lines 1--18 of 71).}
-\note{Full Prompt B, part 1 of 4.}
+\begin{frame}{Prompt B --- full text (1/2)}\label{frm:promptBfull}
+  \lstinputlisting[style=promptbig, firstline=1, lastline=11]{prompts/02-add-detection.txt}
+  \slidesource{Exact text of \texttt{prompts/02-add-detection.md} (lines 1--11 of 21).}
+\note{Full Prompt B, part 1 of 2. It replaced a 71-line prompt (kept in docs/previous-prompts/).}
 \end{frame}
-\begin{frame}{Prompt B --- full text (2/4)}
-  \lstinputlisting[style=prompt, firstline=20, lastline=38]{prompts/02-add-detection.txt}
-  \slidesource{Lines 20--38 of 71.}
-\note{Part 2 of 4.}
+\begin{frame}{Prompt B --- full text (2/2)}
+  \lstinputlisting[style=promptbig, firstline=12, lastline=21]{prompts/02-add-detection.txt}
+  \slidesource{Lines 12--21 of 21.}
+\note{Part 2 of 2.}
 \end{frame}
-\begin{frame}{Prompt B --- full text (3/4)}
-  \lstinputlisting[style=prompt, firstline=40, lastline=56]{prompts/02-add-detection.txt}
-  \slidesource{Lines 40--56 of 71.}
-\note{Part 3 of 4.}
-\end{frame}
-\begin{frame}{Prompt B --- full text (4/4)}
-  \lstinputlisting[style=prompt, firstline=58, lastline=71]{prompts/02-add-detection.txt}
-  \slidesource{Lines 58--71 of 71.}
-\note{Part 4 of 4.}
+
+\begin{frame}{The starter kit: what the assistant builds on}\label{frm:kit}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.53\textwidth}
+      \scriptsize
+      \renewcommand{\arraystretch}{1.15}
+      \begin{tabular}{@{}l p{0.54\linewidth}@{}}
+        \toprule
+        \textbf{File} & \textbf{Role}\\
+        \midrule
+        \texttt{CLAUDE.md} & rules for the assistant: write only \texttt{app.py}, work fast, the kit's API\\
+        \texttt{lab.py} & the one module the app imports\\
+        \texttt{openrouter\_client.py} & one request per call, timeouts, no retries\\
+        \texttt{generation.py} & claims, formats, balanced design, parsing\\
+        \texttt{detection.py} & evidence, blinding, verdicts, metrics\\
+        \texttt{fixtures.json} & 8 hand-authored offline examples\\
+        \texttt{smoke\_test.py} & starts the app, clicks every button, no network\\
+        \texttt{tests/} & 87 offline tests for the kit\\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{readme}[Why a kit]
+        \footnotesize From an empty folder, rehearsal took about 6 min (Prompt A) and 17 min (Prompt B),
+        mostly writing and testing plumbing. On the kit: about 1 min each.
+      \end{readme}
+      \begin{takeaway}[Tested code where errors hide]
+        \footnotesize Blinding and scoring are tested library code, not live code. The assistant writes the UI.
+      \end{takeaway}
+    \end{column}
+  \end{columns}
+  \slidesource{Headless replays, Claude Code 2.1.302 (Opus 5.5), 18 Oct 2026; see \texttt{docs/validation-report.md}.}
+\note{The kit modules are the same code as fallback/full-app. lab.py is a thin facade. Permission file
+.claude/settings.json: accept edits, allow exactly the smoke-test command, deny reading .env and secrets.}
 \end{frame}
 
 \begin{frame}{Evidence packet and claims (verbatim)}\label{frm:evidence}

@@ -1,5 +1,7 @@
 # Source and reuse map
 
+> **Page numbers.** The "new page" numbers below refer to an earlier 53-page draft of the deck. The current deck has 47 pages: main flow 1–26, appendix 27–46, *Resources and contact* on 47 (see `slides-latex/README.md`). The mapping from source slides to content is unchanged.
+
 The lecture deck *AI or Reality? Can We Tell the Difference?* (60-minute edition with a live build) was prepared on 18 Oct 2026. This file records:
 
 - what was supplied, and what was reused from it;

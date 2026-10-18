@@ -1,0 +1,13 @@
+# Local classroom app: bind to this machine only, no usage statistics,
+# and a minimal toolbar (hides the "Deploy" publishing button).
+[server]
+address = "localhost"
+# Live build: rerun automatically when the assistant saves app.py. The session state
+# (generated and reviewed rows) survives the rerun.
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"

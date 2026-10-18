@@ -1,2 +1,5 @@
+# Tested with Python 3.12.13, streamlit 1.66.0, requests 2.34.2, python-dotenv 1.2.4, pytest (Oct 2026)
 streamlit>=1.50,<2
-requests>=2.32,<3
+requests>=2.31,<3
+python-dotenv>=1.0,<2
+pytest>=8

@@ -27,3 +27,5 @@ slides-latex/*.vrb
 slides-latex/*.pdf
 # macOS
 .DS_Store
+# The live build writes this; the teaching folder ships without it
+live-coding-start/app.py

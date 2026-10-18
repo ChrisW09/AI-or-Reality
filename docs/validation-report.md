@@ -35,6 +35,7 @@ The suites were re-run in their packaged locations with `python -m pytest -q -p 
 |---|---|---|
 | `fallback/stage1-generator/` | **55 passed** | 1.09 s |
 | `fallback/full-app/` | **93 passed** | 3.03 s |
+| `starter-kit/` (= `live-coding-start/` before class; added with the kit) | **87 passed** | 0.31 s |
 
 A fixture blocks every real `requests.post`/`requests.get`, so no test can reach the network.
 
@@ -145,10 +146,58 @@ Across the rehearsals the economy model reversed its assigned TRUE claim in **2 
 
 ## 4. Coding-agent prompt replays (actual)
 
-**How the replays were run:**
-- Each prompt went to a **fresh** general-purpose subagent of the same Claude model family. It stood in for Claude Code in VS Code; **it was not the VS Code extension itself**.
+### 4a. Starter kit and short prompts (current, 18 Oct 2026, afternoon)
+
+**What changed.** `live-coding-start/` now holds the tested starter kit (`starter-kit/`, 87 offline tests). The kit consists of:
+- `lab.py` over the unchanged `openrouter_client.py`, `generation.py` and `detection.py` from `fallback/full-app/`;
+- `CLAUDE.md`;
+- `.claude/settings.json`;
+- `smoke_test.py`.
+
+The prompts were shortened to 24 and 21 lines. The earlier 62- and 71-line prompts are kept in `docs/previous-prompts/`.
+
+**How the replays were run.** This time the replays used the **real Claude Code CLI**, not a stand-in agent:
+- Claude Code 2.1.302, `claude -p` (headless), model Opus 5.5 (the account default; effort *high* from the user settings unless stated).
+- Each run used a fresh copy of the kit with the prepared Python 3.12 venv as `.venv`. There was no API key and no paid OpenRouter call.
+- Prompt A was passed verbatim. Prompt B was passed verbatim in the **same conversation** (`--resume <session>`), as in class.
+- Times are wall-clock from `date +%s` around each `claude -p` call, including CLI start-up.
+- After each run, `smoke_test.py` was run again independently on the resulting `app.py`.
+
+| Round | Configuration | Prompt A | Prompt B | Smoke test (independent re-run) |
+|---|---|---|---|---|
+| Final kit and prompts, 3 replicates | default settings, smoke-test command allowed (= trusted folder) | 54, 46, 61 s | 50, 66, 55 s | passed 6/6; 0 permission denials |
+| Near-final kit (before the `ValueError` rule, the "Clear dataset" button and `runOnSave`) | effort high / medium / low / fast mode + medium, smoke-test command allowed | 48 / 46 / 35 / 51 s | 60 / 39 / 50 / 47 s | passed 8/8; the *low* run had 1 denial each (it piped the smoke output through `grep`) |
+| First draft of the kit | same four settings, folder **not trusted** | 29–54 s | 45–72 s | passed 8/8, but the assistant's own smoke-test call was **denied** each time |
+
+**Findings that shaped the kit:**
+- **Untrusted folders ignore `permissions.allow`.** Claude Code printed: *"Ignoring 4 permissions.allow entries from .claude/settings.json: this workspace has not been trusted."* Hence the runbook step to trust `live-coding-start/` once.
+- Agents sometimes wrapped the smoke test in pipes or rewrote `app.py` with a shell heredoc, which falls outside the allowlist. `CLAUDE.md` now says to run the command unchanged and to edit only with the file tools. The final 3 runs had no denials.
+- Effort level and fast mode did not change the time much (35–61 s in every setting), so the runbook recommends the defaults.
+- **Generated apps** were 246–362 lines (after Prompt B). They were read for quality:
+  - permanent warning and correction;
+  - live buttons disabled offline and without a key;
+  - fixtures marked as hand-authored;
+  - detector input only via `lab.detector_input()`;
+  - matrix cells via `lab.cell_summary()`;
+  - labels hidden by default.
+
+  One weakness, kit exceptions not caught everywhere, led to the `ValueError` rule in `CLAUDE.md`.
+
+**Browser check of the in-class flow (Playwright + Chrome, headless).**
+1. Served run f1's Prompt A app offline and loaded the 8 fixtures.
+2. While the server ran, replaced `app.py` with that run's Prompt B version.
+3. With `runOnSave = true`, the *Detect & compare* tab appeared **0.3 s** after the save, with no click.
+4. All 8 approved rows were still there.
+5. Freeze, then the illustrative verdicts, showed the matrix; there were no tracebacks in the server log.
+
+Without `runOnSave`, no "Source file changed" notice appeared within 20 s (minimal toolbar, polling file watcher), which is why the kit sets it.
+
+**NOT DONE:** the same prompts in the VS Code extension itself (it shares the CLI's engine, but its permission UI and your reading time are not measured). The runbook asks for one dress rehearsal in VS Code.
+
+### 4b. Empty folder and long prompts (earlier on 18 Oct 2026, superseded)
+
+- Each prompt went to a **fresh** general-purpose subagent of the same Claude model family. It stood in for Claude Code in VS Code; it was not the VS Code extension itself.
 - Each agent worked in an isolated scratch copy of `live-coding-start/`, holding only `models.json`, with the prepared venv. There was no API key and no paid calls.
-- The prompts were passed verbatim.
 - Elapsed time is measured from the agent's own `date +%s` at its first and last action.
 
 | Replay | Elapsed | Tests written and passed | Notes |
@@ -156,13 +205,9 @@ Across the rehearsals the economy model reversed its assigned TRUE claim in **2 
 | Prompt A, original text | **379 s** (6.3 min) | 27 | Headless health check ok. Used `usage.include` (deprecated, harmless). It had no provider routing, so it would have hit the 429 on Mistral Large. |
 | Prompt B, on that result | **1061 s** (17.7 min) | 83 | No browser available to the agent. It fetched the WHO page itself. |
 | Prompt A, **refined** (3 lines on `provider_routing` added) | **379 s** | 22 | Picked up `mistral/eu` routing from `models.json`. The **live smoke test passed** (run 12). |
-| Prompt B, on the refined A | **999 s** (16.7 min) | 77 | Agent's open question: should a run stay strict at two calls per frozen run, so a failed detector means re-freezing and calling both again, or get a "retry failed detector" button? Not acted on; the instructor's fallback app has a single-detector retry button. |
+| Prompt B, on the refined A | **999 s** (16.7 min) | 77 | Agent's open question about a single-detector retry; the kit-based prompt now asks for one retry button per detector. |
 
-**The about-two-minute target was NOT met in any replay.** Prompt A took about 6 minutes, and Prompt B about 17 to 18 minutes.
-
-In the real VS Code extension, permission prompts and the instructor's own reviewing may add time; that was **not measured**. The runbook therefore plans the switch to the prepared apps at about 19:30 (generator) and 37:00 (full app).
-
-**UNVERIFIED:** an actual run of these prompts inside the instructor's VS Code with the Claude Code extension.
+The about-two-minute target was not met with that setup; this is what the starter kit fixes.
 
 ---
 
@@ -198,19 +243,17 @@ In the real VS Code extension, permission prompts and the instructor's own revie
 ## 7. LaTeX compilation and PDF inspection
 
 - **Build:** `latexmk -pdf` with pdfLaTeX and the biblatex bibtex backend; build files go to a scratch folder.
-- **Results:** 0 LaTeX errors. The audience PDF has **53 pages** (16:9). The presenter-notes edition has **53 pages** at 907 × 255 pt, slide on the left and notes on the right.
-- **Overfull boxes:** none in the final build (the last one, 1 pt on the appendix map page p43, was removed by deleting a 1 mm space).
+- **Results (rebuilt 18 Oct 2026 after the starter-kit change):** 0 LaTeX errors. The audience PDF has **47 pages** (16:9). The presenter-notes edition has **47 pages** at 907 × 255 pt, slide on the left and notes on the right.
+- **Overfull boxes:** none in the audience build. The notes build reports the same 13.7 pt hbox at every frame end, which is a property of the notes layout; no note leaves its pane.
 - **Visual inspection:** every page was rendered and inspected; earlier rounds found and fixed footer collisions, a listing overflow, table widths and comma-in-title errors.
-- **Notes fit:** checked with PyMuPDF. No note leaves its pane; the fullest notes page ends at 150 of 255 pt.
+- **Notes fit:** checked with PyMuPDF. No note leaves its pane; the fullest notes page ends at 172 of 255 pt.
+- **Visual inspection after the change:** pages 16–19, 21 and 28–32 and their notes were rendered and inspected; the architecture diagram on p19 was adjusted so the kit box text fits.
 - **Hyperlinks** (extracted from the PDF):
-  - both repositories on **p15** and **p53**;
-  - `mailto:christoph.weisser@hsbi.de` on **p1, p2 and p53**;
-  - internal buttons **p17 → p31** (Prompt A in full), **p22 → p35** (Prompt B in full) and **p29 → p53** (skip the appendix).
-- **Final page:** "Resources and contact" (p53).
-- **Frame count:**
-  - main flow: **30 logical frames** (title, 28 teaching frames, final page);
-  - appendix: **21 logical frames** on **23 pages** (the references frame breaks over 3 pages);
-  - total: **53 rendered pages**, with no overlays.
+  - both repositories on **p15** and **p47**;
+  - `mailto:christoph.weisser@hsbi.de` on **p1, p2 and p47**;
+  - internal buttons **p17 → p28** (Prompt A in full), **p17 → p32** (starter kit), **p21 → p30** (Prompt B in full) and **p26 → p47** (skip the appendix).
+- **Final page:** "Resources and contact" (p47).
+- **Page layout:** main flow p1–p26, appendix p27–p46 (the references frame breaks over 3 pages), final page p47; no overlays.
 - **Prompt text:** the appendix pages read the text files extracted from `prompts/*.md` (`tools/extract_prompts.py`, ASCII-checked), so the slides and the files cannot drift apart.
 - **Tokenisation deletion:**
   - Searched: both PDFs (slides and notes) and all deck sources, including the generated tables and `references.bib`.
@@ -222,7 +265,7 @@ In the real VS Code extension, permission prompts and the instructor's own revie
 
 ## 8. Remaining limitations and unverified items
 
-- **UNVERIFIED:** the live build with the real Claude Code extension in the instructor's VS Code, including its login, permission prompts and timing.
+- **UNVERIFIED:** the live build with the real Claude Code extension in the instructor's VS Code, including its login, the folder-trust dialog, permission prompts and timing. The headless CLI replays (§4a) took about a minute per prompt.
 - **UNVERIFIED:** live behaviour on lecture day. Rate limits, endpoint availability and model outputs can change; seeds are documented as not guaranteeing determinism.
 - **Done:** live end-to-end smoke test of the agent-built full-chain app (generation and detection), with rows bulk-included and not reviewed, so it is a functional check only.
 - **WHO page:** checked on 18 Oct 2026. It is now titled "Tobacco and nicotine" (26 June 2026) and may change again; recheck before class.
